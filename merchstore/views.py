@@ -1,19 +1,15 @@
-from django.shortcuts import render
+from django.views.generic import DetailView, ListView
 
 from .models import Product
 
 
-def item_list(request):
-    products = Product.objects.all()
-    ctx = {
-        'products': products
-    }
-    return render(request, 'merchstore/item_list.html', ctx)
+class ItemListView(ListView):
+    model = Product
+    template_name = 'merchstore/item_list.html'
+    context_object_name = 'products'
 
 
-def item_detail(request, pk):
-    product = Product.objects.get(pk=pk)
-    ctx = {
-        'product': product
-    }
-    return render(request, 'merchstore/item_detail.html', ctx)
+class ItemDetailView(DetailView):
+    model = Product
+    template_name = 'merchstore/item_detail.html'
+    context_object_name = 'product'

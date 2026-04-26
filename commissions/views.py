@@ -1,19 +1,15 @@
-from django.shortcuts import render
+from django.views.generic import DetailView, ListView
 
 from .models import Commission
 
 
-def request_list(request):
-    commissions = Commission.objects.all()
-    ctx = {
-        'commissions': commissions
-    }
-    return render(request, 'commissions/request_list.html', ctx)
+class RequestListView(ListView):
+    model = Commission
+    template_name = 'commissions/request_list.html'
+    context_object_name = 'commissions'
 
 
-def request_detail(request, pk):
-    commission = Commission.objects.get(pk=pk)
-    ctx = {
-        'commission': commission
-    }
-    return render(request, 'commissions/request_detail.html', ctx)
+class RequestDetailView(DetailView):
+    model = Commission
+    template_name = 'commissions/request_detail.html'
+    context_object_name = 'commission'

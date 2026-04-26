@@ -1,19 +1,15 @@
-from django.shortcuts import render
+from django.views.generic import DetailView, ListView
 
 from .models import Event
 
 
-def event_list(request):
-    events = Event.objects.all()
-    ctx = {
-        'events': events
-    }
-    return render(request, 'localevents/event_list.html', ctx)
+class EventListView(ListView):
+    model = Event
+    template_name = 'localevents/event_list.html'
+    context_object_name = 'events'
 
 
-def event_detail(request, pk):
-    event = Event.objects.get(pk=pk)
-    ctx = {
-        'event': event
-    }
-    return render(request, 'localevents/event_detail.html', ctx)
+class EventDetailView(DetailView):
+    model = Event
+    template_name = 'localevents/event_detail.html'
+    context_object_name = 'event'

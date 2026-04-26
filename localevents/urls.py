@@ -1,10 +1,10 @@
 from django.urls import path
 
-from .views import event_list, event_detail
+from .views import EventDetailView, EventListView
 
 app_name = 'localevents'
 
 urlpatterns = [
-    path('events', event_list, name='event_list'),
-    path('event/<int:pk>', event_detail, name='event_detail'),
+    path('events', EventListView.as_view(), name='event_list'),
+    path('event/<int:pk>', EventDetailView.as_view(), name='event_detail'),
 ]
