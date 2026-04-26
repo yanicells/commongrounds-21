@@ -1,15 +1,16 @@
 {% extends "base.html" %}
 {% load static %}
+
 {% block title %}Local Events{% endblock %}
+
 {% block content %}
 <h2>Local Events List</h2>
-    <ul>
-        {% for event in events %}
-        <li>
-            <a href="{{ event.get_absolute_url }}">
-                {{ event.title }}
-            </a>
-        </li>
-        {% endfor %}
-    </ul>
+<ul>
+  {% for event in events %}
+  <li>
+    <a href="{{ event.get_absolute_url }}"> {{ event.title }} </a>
+  </li>
+  {% endfor %}
+</ul>
+<a href="{% url 'home' %}">Back to home</a>
 {% endblock content %}
