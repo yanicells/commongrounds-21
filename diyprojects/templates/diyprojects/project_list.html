@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}DIY Projects{%endblock %}
+
+{% block title %}DIY Projects{% endblock %}
 
 {% block content %}
 <h2>DIY Projects</h2>
@@ -13,4 +14,5 @@
   <li>No projects available</li>
   {% endfor %}
 </ul>
+<a href="{% url 'home' %}">Back to home</a>
 {% endblock %}

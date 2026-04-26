@@ -1,5 +1,9 @@
-{% extends 'base.html' %} {% load static %} {% block title %}Commission
-Requests{% endblock %} {% block content %}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Commission Requests{% endblock %}
+
+{% block content %}
 <h2>Commissions</h2>
 <ul>
   {% for commission in commissions %}
@@ -10,4 +14,5 @@ Requests{% endblock %} {% block content %}
   <li>No commission requests available</li>
   {% endfor %}
 </ul>
+<a href="{% url 'home' %}">Back to home</a>
 {% endblock %}
