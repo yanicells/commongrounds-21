@@ -4,25 +4,6 @@
 
 {% block content %}
     <h1>Welcome to Common Grounds</h1>
-    
-    {% if user.is_authenticated %}
-        <p>Hello, {{ user.profile.display_name|default:user.username }}!</p>
-        <p>
-            <a href="{% url 'accounts:profile_update' username=user.username %}">Update Profile</a> | 
-            <form method="post" action="{% url 'logout' %}" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit">Logout</button>
-            </form>
-        </p>
-    {% else %}
-        <p>Please log in to continue.</p>
-        <p>
-            <a href="{% url 'login' %}">Login</a> | 
-            <a href="{% url 'accounts:register' %}">Register</a>
-        </p>
-    {% endif %}
-    <hr>
-
     <p class="intro">Find merch, events, books, DIY projects, and commissions from hobbyists in your community.</p>
     <ul>
         <li><a href="/merchstore/items">Merch Store</a> — Browse available merchandise</li>
