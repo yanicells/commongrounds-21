@@ -25,7 +25,7 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'registration/profile_update.html'
 
     def get_object(self, queryset=None):
-        return Profile.objects.get(user__username.self.kwargs['username'])
+        return Profile.objects.get(user__username=self.kwargs['username'])
 
     def get_success_url(self):
         return reverse_lazy('home')
