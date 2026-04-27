@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'bookclub',
     'diyprojects',
     'localevents',
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -129,3 +130,9 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = os.getenv('STATIC_ROOT')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+LOGIN_URL = "/accounts/login/"
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
