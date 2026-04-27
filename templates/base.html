@@ -11,13 +11,15 @@
   </head>
   <body>
     <header class="navbar">
-      <h1 class="navbar-brand">
-        <img src="{% static 'favicon.png' %}" alt="" class="navbar-logo" />
-        Common Grounds
-      </h1>
+      <a href="/" style="text-decoration: none;">
+        <h1 class="navbar-brand">
+          <img src="{% static 'favicon.png' %}" alt="" class="navbar-logo" />
+          Common Grounds
+        </h1>
+      </a>
+      
       <nav>
         <ul class="navbar-links">
-          <li><a href="/">Home</a></li>
           <li><a href="/merchstore/items">Merch</a></li>
           <li><a href="/bookclub/books">Books</a></li>
           <li><a href="/commissions/requests">Commissions</a></li>
@@ -25,6 +27,23 @@
           <li><a href="/localevents/events">Events</a></li>
         </ul>
       </nav>
+
+      <div class="navbar-auth">
+        {% if user.is_authenticated %}
+          <span>Hello, 
+            <a href="{% url 'accounts:profile_update' username=user.username %}" style="font-weight: bold;">
+              {{ user.profile.display_name|default:user.username }}
+            </a>!
+          </span>
+          <form method="post" action="{% url 'logout' %}" style="margin: 0;">
+            {% csrf_token %}
+            <button type="submit" class="btn-link">Logout</button>
+          </form>
+        {% else %}
+          <a href="{% url 'login' %}">Login</a>
+          <a href="{% url 'accounts:register' %}">Register</a>
+        {% endif %}
+      </div>
     </header>
 
     <main>
