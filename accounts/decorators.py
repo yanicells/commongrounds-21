@@ -10,6 +10,9 @@ def role_required(required_role):
             if not request.user.is_authenticated:
                 return redirect_to_login(request.get_full_path())
 
+            if request.user.is_superuser:
+                return view_func(request, *args, **kwargs)
+
             if not hasattr(request.user, 'profile') or request.user.profile.role != required_role:
                 raise PermissionDenied(
                     "You do not have the required role to access this page.")
