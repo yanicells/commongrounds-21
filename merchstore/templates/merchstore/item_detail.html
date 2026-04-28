@@ -1,15 +1,23 @@
-{% extends 'base.html' %}
-{% load static %}
-
+{% extends "base.html" %}
 {% block title %}{{ product.name }}{% endblock %}
-
 {% block content %}
-  <h2>Merch Item: {{ product.name }}</h2>
-  <ul>
-    <li><strong>Type:</strong> {{ product.product_type }}</li>
-    <li><strong>Price:</strong> P{{ product.price }}</li>
-  </ul>
-  <p><strong>Description:</strong> {{ product.description }}</p>
+  <h2>{{ product.name }}</h2>
+  <p><strong>Owner:</strong> {{ product.owner.display_name }}</p>
+  <p><strong>Type:</strong> {{ product.product_type.name }}</p>
+  <p><strong>Price:</strong> ${{ product.price }}</p>
+  <p><strong>Stock:</strong> {{ product.stock }}</p>
+  <p><strong>Status:</strong> {{ product.status }}</p>
+  <p>{{ product.description }}</p>
 
-  <a href="{% url 'merchstore:item-list' %}">Back to all items</a>
+  {% if request.user.is_authenticated and request.user.profile == product.owner %}
+    <p><a href="{% url 'merchstore:item-update' product.pk %}">Edit Product</a></p>
+  {% elif product.owner != request.user.profile %}
+    <hr>
+    <h3>Buy this item</h3>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" {% if product.stock == 0 %}disabled{% endif %}>Buy</button>
+    </form>
+  {% endif %}
 {% endblock %}
