@@ -10,7 +10,8 @@ class ProductForm(forms.ModelForm):
             'description', 'price', 'stock', 'status'
         ]
 
-    class TransactionForm(forms.ModelForm):
-        class Meta:
-            model = Transaction
-            fields = ['amount']
+
+class TransactionForm(forms.ModelForm):
+    class Meta:
+        model = Transaction
+        fields = ['amount']

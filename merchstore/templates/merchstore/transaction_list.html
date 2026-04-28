@@ -1,21 +1,25 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}My Sales{% endblock %}
 {% block content %}
-  <h2>My Sales Transactions</h2>
-  
-  {% regroup object_list by buyer as buyer_list %}
-  
-  {% for buyer in buyer_list %}
-    <h3>Buyer: {{ buyer.grouper.display_name }}</h3>
-    <ul>
-    {% for transaction in buyer.list %}
-      <li>
-        {{ transaction.amount }}x {{ transaction.product.name }} - <strong>{{ transaction.status }}</strong>
-        (Sold: {{ transaction.created_on|date:"Y-m-d" }})
-      </li>
-    {% endfor %}
-    </ul>
-  {% empty %}
-    <p>No sales yet.</p>
+<h2>My Sales Transactions</h2>
+
+{% regroup object_list by buyer as buyer_list %}
+
+{% for buyer in buyer_list %}
+  <h3>Buyer: {{ buyer.grouper.display_name }}</h3>
+  <ul>
+  {% for transaction in buyer.list %}
+    <li>
+      {{ transaction.amount }}x <a href="{{ transaction.product.get_absolute_url }}">{{ transaction.product.name }}</a> - <strong>{{ transaction.status }}</strong>
+      (Sold: {{ transaction.created_on|date:"Y-m-d" }})
+    </li>
   {% endfor %}
-{% endblock %}
+  </ul>
+{% empty %}
+  <p>No sales yet.</p>
+{% endfor %}
+
+<br>
+<a href="{% url 'merchstore:item-list' %}">Back to store</a>
+{% endblock content %}

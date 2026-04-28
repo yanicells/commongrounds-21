@@ -1,26 +1,40 @@
 {% extends "base.html" %}
-{% block title %}MerchStore{% endblock %}
-{% block content %}
-  <h2>Merchandise Store</h2>
-  
-  {% if request.user.is_authenticated %}
-    <p><a href="{% url 'merchstore:item-add' %}">Create New Product</a></p>
-  {% endif %}
+{% load static %}
 
-  {% if my_products %}
-    <h3>My Products</h3>
-    <ul>
-    {% for item in my_products %}
-      <li><a href="{{ item.get_absolute_url }}">{{ item.name }}</a> ({{ item.status }})</li>
-    {% endfor %}
-    </ul>
-    
-    <h3>All Other Products</h3>
-  {% endif %}
-  
+{% block title %}MerchStore{% endblock %}
+
+{% block content %}
+<h2>Merchandise Store</h2>
+
+{% if request.user.is_authenticated %}
+  <div style="margin-bottom: 1rem;">
+    {% if request.user.profile.role == 'Market Seller' %}
+      <a href="{% url 'merchstore:item-add' %}">Create New Product</a> | 
+      <a href="{% url 'merchstore:transaction-list' %}">My Sales Dashboard</a> | 
+    {% endif %}
+    <a href="{% url 'merchstore:cart' %}">My Cart</a>
+  </div>
+{% endif %}
+
+{% if my_products %}
+  <h3>My Products</h3>
   <ul>
-  {% for item in all_products %}
-    <li><a href="{{ item.get_absolute_url }}">{{ item.name }}</a> ({{ item.status }})</li>
+  {% for item in my_products %}
+    <li>
+      <a href="{{ item.get_absolute_url }}"> {{ item.name }} </a> - {{ item.status }}
+    </li>
   {% endfor %}
   </ul>
-{% endblock %}
+  
+  <h3>All Other Products</h3>
+{% endif %}
+
+<ul>
+{% for item in all_products %}
+  <li>
+    <a href="{{ item.get_absolute_url }}"> {{ item.name }} </a> - {{ item.status }}
+  </li>
+{% endfor %}
+</ul>
+<a href="{% url 'home' %}">Back to home</a>
+{% endblock content %}
