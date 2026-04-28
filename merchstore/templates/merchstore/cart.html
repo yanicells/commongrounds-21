@@ -1,21 +1,25 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}My Cart{% endblock %}
 {% block content %}
-  <h2>My Cart</h2>
-  
-  {% regroup object_list by product.owner as owner_list %}
-  
-  {% for owner in owner_list %}
-    <h3>Seller: {{ owner.grouper.display_name }}</h3>
-    <ul>
-    {% for transaction in owner.list %}
-      <li>
-        {{ transaction.amount }}x {{ transaction.product.name }} - <strong>{{ transaction.status }}</strong>
-        (Purchased: {{ transaction.created_on|date:"Y-m-d" }})
-      </li>
-    {% endfor %}
-    </ul>
-  {% empty %}
-    <p>Your cart is empty.</p>
+<h2>My Cart</h2>
+
+{% regroup object_list by product.owner as owner_list %}
+
+{% for owner in owner_list %}
+  <h3>Seller: {{ owner.grouper.display_name }}</h3>
+  <ul>
+  {% for transaction in owner.list %}
+    <li>
+      {{ transaction.amount }}x <a href="{{ transaction.product.get_absolute_url }}">{{ transaction.product.name }}</a> - <strong>{{ transaction.status }}</strong>
+      (Purchased: {{ transaction.created_on|date:"Y-m-d" }})
+    </li>
   {% endfor %}
-{% endblock %}
+  </ul>
+{% empty %}
+  <p>Your cart is empty.</p>
+{% endfor %}
+
+<br>
+<a href="{% url 'merchstore:item-list' %}">Back to store</a>
+{% endblock content %}
