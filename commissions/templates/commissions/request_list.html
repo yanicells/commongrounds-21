@@ -5,14 +5,45 @@
 
 {% block content %}
 <h2>Commissions</h2>
+
 <ul>
-  {% for commission in commissions %}
-  <li>
-    <a href="{{ commission.get_absolute_url }}">{{ commission.title }}</a>
-  </li>
-  {% empty %}
-  <li>No commission requests available</li>
+  {% if user.is_authenticated %}
+    <h3>Your Commissions</h3>
+    {% for commission in created %}
+      <li>
+        <a href="{{ commission.get_absolute_url }}">{{ commission.title }}</a>
+      </li>
+      {% empty %}
+      <li>No commissions made</li>
+    {% endfor %}
+
+    <h3>Job Applications</h3>
+    {% for commission in applied %}
+      <li>
+        <a href="{{ commission.get_absolute_url }}">{{ commission.title }}</a>
+      </li>
+      {% empty %}
+      <li>No applications</li>
+    {% endfor %}
+
+    {% for commission in commission_list %}
+    <h3>All Commissions:</h3>
+    <li>
+      <a href="{{ commission.get_absolute_url }}">{{ commission.title }}</a>
+    </li>
+    {% empty %}
+    <li>No commissions available</li>
+    {% endfor %}
+  
+  {% else %}
+    {% for commission in commission_list %}
+    <li>
+      <a href="{{ commission.get_absolute_url }}">{{ commission.title }}</a>
+    </li>
+    {% empty %}
+    <li>No commissions available</li>
   {% endfor %}
 </ul>
+{% endif %}   
 <a href="{% url 'home' %}">Back to home</a>
 {% endblock %}

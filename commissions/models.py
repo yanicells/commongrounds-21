@@ -23,10 +23,12 @@ class Commission(models.Model):
         null=True,
         blank=True,
     )
-    maker = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    maker = models.ForeignKey(Profile,
+                              on_delete=models.CASCADE,
+                              related_name='commissions')
     people_required = models.PositiveIntegerField()
     status = models.CharField(max_length=10,
-                              choices=['Open', 'Full'],
+                              choices=[('0', 'Open'), ('1', 'Full')],
                               default="Open")
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
@@ -42,11 +44,12 @@ class Commission(models.Model):
 
 
 class Job(models.Model):
-    commission = models.ForeignKey(Commission, on_delete=models.CASCADE)
+    commission = models.ForeignKey(
+        Commission, on_delete=models.CASCADE, related_name='jobs')
     role = models.CharField(max_length=255)
     manpower_required = models.PositiveIntegerField()
     status = models.CharField(max_length=10,
-                              choices=['Open', 'Full'],
+                              choices=[('0', 'Open'), ('1', 'Full')],
                               default="Open")
     applied_on = models.DateTimeField(auto_now_add=True)
 
@@ -54,4 +57,21 @@ class Job(models.Model):
         return f'{self.role}'
 
     class Meta:
-        ordering = ['-status', 'role']
+        ordering = ['status', 'role']
+
+
+class JobApplication(models.Model):
+    job = models.ForeignKey(Job, on_delete=models.CASCADE,
+                            related_name='applications')
+    applicant = models.ForeignKey(Profile,
+                                  on_delete=models.CASCADE,
+                                  related_name='applicant')
+    status = models.CharField(max_length=10,
+                              choices=[('0', 'Pending'),
+                                       ('1', 'Accepted'),
+                                       ('2', 'Rejected')],
+                              default="Pending")
+    applied_on = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['status', '-applied_on']

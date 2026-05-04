@@ -6,7 +6,7 @@ from . import views
 app_name = 'commissions'
 
 urlpatterns = [
-    path('requests', views.RequestListView.as_view(), name='request-list'),
-    path('request/<int:pk>', views.RequestDetailView.as_view(),
+    path('requests', views.CommissionListView.as_view(), name='commission-list'),
+    path('request/<int:pk>', views.CommissionDetailView.as_view(),
          name='request-detail'),
 ]
