@@ -26,8 +26,8 @@
       <li>No applications</li>
     {% endfor %}
 
-    {% for commission in commission_list %}
     <h3>All Commissions:</h3>
+    {% for commission in commission_list %}
     <li>
       <a href="{{ commission.get_absolute_url }}">{{ commission.title }}</a>
     </li>
@@ -45,5 +45,6 @@
   {% endfor %}
 </ul>
 {% endif %}   
-<a href="{% url 'home' %}">Back to home</a>
+<br><a href="{% url 'home' %}">Back to home</a>
+<br><a href="{% url 'commissions:commission-create' %}">Create Commission</a>
 {% endblock %}

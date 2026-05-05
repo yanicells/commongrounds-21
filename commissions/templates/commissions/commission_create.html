@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Commission Create {% endblock %}
+
+
+{% block content %}
+<h3>Create a Commission</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <h3>Create Job</h3>
+        {{ job_form.as_p}}
+        <input type="submit" value="Submit">
+    </form>
+
+    <br><a href="{% url 'commissions:commission-list' %}">Back to List</a>
+{% endblock %}

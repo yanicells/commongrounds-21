@@ -8,5 +8,7 @@ app_name = 'commissions'
 urlpatterns = [
     path('requests', views.CommissionListView.as_view(), name='commission-list'),
     path('request/<int:pk>', views.CommissionDetailView.as_view(),
-         name='request-detail'),
+         name='commission-detail'),
+    path('request/add', views.CommissionCreateView.as_view(),
+         name='commission-create'),
 ]
