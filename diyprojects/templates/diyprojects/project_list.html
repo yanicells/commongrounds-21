@@ -2,17 +2,45 @@
 {% load static %}
 
 {% block title %}DIY Projects{% endblock %}
+<h2>DIY Projects</h2>
 
 {% block content %}
-<h2>DIY Projects</h2>
-<ul>
-  {% for project in projects %}
-  <li>
-    <a href="{{ project.get_absolute_url }}"> {{ project.title }} </a>
-  </li>
+
+{% if user.is_authenticated %}
+  <h3> Your Created Projects <h3>
+  {% for project in created_projects %}
+    <p><a href="{{ item.get_absolute_url }}"> {{ project.title }}</a>/<p>
+  
   {% empty %}
-  <li>No projects available</li>
+    <p><small> You did not create any projects. </small></p>
   {% endfor %}
-</ul>
-<a href="{% url 'home' %}">Back to home</a>
-{% endblock %}
+
+  <br>
+  <h3> Your Favorite Projects <h3>
+  {% for project in created_projects %}
+    <p><a href="{{ item.get_absolute_url }}"> {{ project.title }}</a>/<p>
+  
+  {% empty %}
+    <p><small> You did not favorite any projects. </small></p>
+  {% endfor %}
+
+  <br>
+  <h3> Your Reviewed Projects <h3>
+  {% for project in created_projects %}
+    <p><a href="{{ item.get_absolute_url }}"> {{ project.title }}</a>/<p>
+  
+  {% empty %}
+    <p><small> You did not review any projects. </small></p>
+  {% endfor %}
+{% endif %}
+
+<br>
+<h3> All other projects <h3>
+  {% for project in all_projects %}
+    <p><small><a href="{{ project.get_absolute_url }}"> {{ project.title }} </small></a> </p>
+
+  {% empty %}
+    <p> <small>No projects available. </small><p>
+  {% endfor %}
+
+  {% endblock %}
