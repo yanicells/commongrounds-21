@@ -38,7 +38,7 @@
 {% endfor %}
 
 {% if user.is_authenticated and user.profile %}
-  <!-- <p><a href="{% url 'commissions:commission-update' commission.pk %}">Create Job</a></p>  -->
+  <p><a href="{% url 'commissions:commission-job-create' commission.pk %}">Create Job</a></p> 
   <p><a href="{% url 'commissions:commission-update' commission.pk %}">Edit Commission</a></p> 
 {% endif %}
 <a href="{% url 'commissions:commission-list' %}">Back to all commissions</a>
