@@ -11,4 +11,8 @@ urlpatterns = [
          name='commission-detail'),
     path('request/add', views.CommissionCreateView.as_view(),
          name='commission-create'),
+    path('request/<int:pk>/edit', views.CommissionUpdateView.as_view(),
+         name='commission-update'),
+    #     path('request/<int:pk>/create-job', views.JobCreateView.as_view(),
+    #          name='commission-update')
 ]

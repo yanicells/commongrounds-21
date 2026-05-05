@@ -8,7 +8,7 @@
 <h3>Create a Commission</h3>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ commission_form.as_p }}
 
         <h3>Create Job</h3>
         {{ job_form.as_p}}
