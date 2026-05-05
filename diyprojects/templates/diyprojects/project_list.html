@@ -2,45 +2,54 @@
 {% load static %}
 
 {% block title %}DIY Projects{% endblock %}
-<h2>DIY Projects</h2>
 
 {% block content %}
+<h2>DIY Projects</h2>
 
 {% if user.is_authenticated %}
-  <h3> Your Created Projects <h3>
+  <h3> Your Created Projects </h3>
   {% for project in created_projects %}
-    <li><small><a href="{{ project.get_absolute_url }}"> {{ project.title }}</a></small></li>
+    <li><a href="{{ project.get_absolute_url }}"> {{ project.title }}</a></li>
   
   {% empty %}
-    <p><small> You did not create any projects. </small></p>
+    <p> You did not create any projects. </p>
   {% endfor %}
 
   <br>
-  <h3> Your Favorite Projects <h3>
+  <h3> Your Favorite Projects </h3>
   {% for project in favorited_projects %}
-    <li><small><a href="{{ project.get_absolute_url }}"> {{ project.title }}</a></small></li>
+    <li><a href="{{ project.get_absolute_url }}"> {{ project.title }}</a></li>
   
   {% empty %}
-    <p><small> You did not favorite any projects. </small></p>
+    <p> You did not favorite any projects. </p>
   {% endfor %}
 
   <br>
-  <h3> Your Reviewed Projects <h3>
+  <h3> Your Reviewed Projects </h3>
   {% for project in reviewed_projects %}
-    <li><small><a href="{{ project.get_absolute_url }}"> {{ project.title }}</a></small></li>
+    <li><a href="{{ project.get_absolute_url }}"> {{ project.title }}</a></li>
   
   {% empty %}
-    <p><small> You did not review any projects. </small></p>
+    <p> You did not review any projects. </p>
   {% endfor %}
 {% endif %}
 
 <br>
-<h3> All projects <h3>
+<h3> All projects </h3>
   {% for project in all_projects %}
-    <li><small><a href="{{ project.get_absolute_url }}"> {{ project.title }} </a> </small></li>
+    <li><a href="{{ project.get_absolute_url }}"> {{ project.title }} </a> </li>
 
   {% empty %}
-    <p> <small>No projects available. </small><p>
+    <p> No projects available. <p>
   {% endfor %}
-
+  
+  <br>
+  {% if user.is_authenticated %}
+  {% if user.profile.role == "Project Creator" %}
+    <a href="{% url 'diyprojects:project-add' %}">Create Project</a>
+    {% endif %}
+  {% endif %}
+  
+  <br>
+  <a href='{% url 'home' %}'>Back to Home</a>
   {% endblock %}

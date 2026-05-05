@@ -54,16 +54,16 @@ class ProjectDetailView(DetailView):
         context['reviews'] = ProjectReview.objects.filter(project = self.get_object())
         context['review_form'] = ProjectReviewForm()
         context['rating_form'] = ProjectRatingForm()
-
+        context['favorite_count'] = Favorite.objects.filter(
+                        project = self.get_object() 
+                    ).count()
+        
         if self.request.user.is_authenticated:
             context['is_favorited'] = Favorite.objects.filter(
                 project = self.get_object(),
                 profile = self.request.user.profile
             ).exists()
 
-            context['favorite_count'] = Favorite.objects.filter(
-                project = self.get_object() 
-            ).count()
 
         return context
 
