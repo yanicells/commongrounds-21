@@ -6,7 +6,7 @@ class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
         fields = [
-            'title', 'category', 'creator',
+            'title', 'category',
             'description', 'materials', 'steps'
         ]
 

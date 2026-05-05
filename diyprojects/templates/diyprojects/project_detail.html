@@ -11,16 +11,16 @@
       <li><strong>Steps:</strong> {{ project.steps }}</li>
       <li><strong>Created On:</strong> {{ project.created_on }}</li>
       <li><strong>Updated on:</strong> {{ project.updated_on }}</li>
-      <li><strong>Average Rating:</strong> {{ average_rating }}</li>
 
     </ul>
     <p><strong>Description:</strong> {{ project.description }}</p>
-    <a href="{%url 'diyprojects:project-list'%}">Back to all projects</a>
 
     {% if user.is_authenticated and request.user.profile == project.creator %}
-    <p><a href="{% url 'diyprojects:project-update' project.id %}"> Edit this Project </a></p>
+    <p><a href="{% url 'diyprojects:project-update' project.id %}"> Edit Project </a></p>
     {% endif %}
+    <br>
     
+    <p><strong>Favorites:</strong> {{ favorite_count }}</p>
     {% if request.user.is_authenticated %}
       <form method ='POST'>
         {% csrf_token %}
@@ -28,9 +28,13 @@
           {% if is_favorited %}Remove Favorite{% else %}Favorite{% endif %}
         </button>
       </form>
-      <p><strong>Favorites: {{ favorite_count }}</p>
+    {% else %}
+      <p>Please login to favorite</p>
     {% endif %}
+    <br>
 
+    <h3>Rating</h3>
+    <p><strong>Average Rating:</strong> {{ average_rating }}</p>
     {% if request.user.is_authenticated %}
       <form method = 'POST'>
         {% csrf_token %}
@@ -41,11 +45,11 @@
     {% else %}
       <p>Please login to rate</p>
     {% endif %}
+    <br>
 
-    <h3>Reviews<h3>
+    <h3>Reviews</h3>
     {% for review in reviews %}
-      <p>{{ review.reviewer.display_name }}</p>
-      <p style="text-indent: 50px;"><small>{{ review.comment }}</small></p>
+      <p>{{ review.reviewer.display_name }}: <style="text-indent: 50px;"><i>{{ review.comment }}</i></p>
 
     {% if review.image %}
       <img src = "{{ review.image.url }}" style="margin-left: 50px;" width = 200>
@@ -55,7 +59,7 @@
     {% empty %}
     <p> This project has no reviews yet <p>
     {% endfor %}
-
+    <br>
     {% if request.user.is_authenticated %}
       <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
@@ -67,4 +71,6 @@
       <p>Please login to review</p>
     {% endif %}
 
+    <br>
+    <a href="{%url 'diyprojects:project-list'%}">Back to all projects</a>
   {% endblock %}
