@@ -8,7 +8,6 @@ class CommissionForm(forms.ModelForm):
         fields = ["title",
                   "description",
                   "commission_type",
-                  "people_required",
                   "status"]
 
 

@@ -26,7 +26,7 @@ class Commission(models.Model):
     maker = models.ForeignKey(Profile,
                               on_delete=models.CASCADE,
                               related_name='commissions')
-    people_required = models.PositiveIntegerField()
+    people_required = models.PositiveIntegerField(default=1)
     status = models.CharField(max_length=10,
                               choices=[('0', 'Open'), ('1', 'Full')],
                               default="Open")
@@ -47,7 +47,8 @@ class Job(models.Model):
     commission = models.ForeignKey(
         Commission, on_delete=models.CASCADE, related_name='jobs')
     role = models.CharField(max_length=255)
-    manpower_required = models.PositiveIntegerField()
+    manpower_required = models.PositiveIntegerField(default=1)
+    open_positions = models.IntegerField()
     status = models.CharField(max_length=10,
                               choices=[('0', 'Open'), ('1', 'Full')],
                               default="Open")
