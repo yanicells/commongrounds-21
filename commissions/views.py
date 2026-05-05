@@ -76,14 +76,35 @@ class CommissionDetailView(DetailView):
         job.save()
         if not job.commission.jobs.filter(status='Open').exists():
             job.commission.status = 'Full'
-            print(job.commission.status)
         job.commission.save()
-        print(job.commission.status)
         return redirect("commissions:commission-detail", pk=self.object.pk)
 
 
-# class JobCreateView(CreateView, RoleRequiredMixin):
-#     pass
+class JobCreateView(CreateView, RoleRequiredMixin):
+    model = Job
+    template_name = 'commissions/commission_update.html'
+    form_class = JobForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = JobForm()
+        context['field'] = Commission.objects.get(id=self.kwargs["pk"])
+        return context
+
+    def post(self, request, *args, **kwargs):
+        job_form = JobForm(request.POST)
+        if job_form.is_valid():
+            job = job_form.save(commit=False)
+            job.commission = Commission.objects.get(id=self.kwargs["pk"])
+            job.open_positions = job.manpower_required
+            job.save()
+
+            return redirect("commissions:commission-detail", pk=self.kwargs["pk"])
+        else:
+            self.object_list = self.get_queryset(**kwargs)
+            context = self.get_context_data(**kwargs)
+            context['form'] = job_form
+            return self.render_to_response(context)
 
 
 class CommissionCreateView(CreateView, RoleRequiredMixin):
@@ -91,7 +112,6 @@ class CommissionCreateView(CreateView, RoleRequiredMixin):
     template_name = 'commissions/commission_create.html'
     form_class = CommissionForm
     success_url = reverse_lazy('commissions:commission-list')
-    context_object_name = 'field'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -129,7 +149,6 @@ class CommissionUpdateView(UpdateView, RoleRequiredMixin):
     model = Commission
     template_name = 'commissions/commission_update.html'
     form_class = CommissionForm
-    success_url = reverse_lazy('commissions:commission-list')
     context_object_name = 'field'
     # it doesn't make sense to put the status update here because it only update when you update
     # the form so to update it in real time, I added that feature in the detail view
