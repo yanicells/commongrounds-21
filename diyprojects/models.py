@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
-
+from accounts.models import Profile
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 class ProjectCategory(models.Model):
     name = models.CharField(max_length=255)
@@ -22,6 +23,12 @@ class Project(models.Model):
         null=True,
         blank=True,
     )
+    creator = models.ForeignKey(
+        Profile,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
     description = models.TextField()
     materials = models.TextField()
     steps = models.TextField()
@@ -33,6 +40,64 @@ class Project(models.Model):
 
     def __str__(self):
         return f'{self.title}'
+
+    def get_absolute_url(self):
+        return reverse("diyprojects:project-detail", args=[str(self.pk)])
+
+class Favorite(models.Model):
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE
+    )
+    profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE
+    )
+    date_favorited = models.DateField(auto_now_add=True)
+    project_status =  [
+        ('Backlog', 'Backlog'),
+        ('To-Do', 'To-Do'),
+        ('Done', 'Done'),
+    ]
+    
+    def get_absolute_url(self):
+        return reverse("diyprojects:project-detail", args=[str(self.pk)])
+
+class ProjectReview(models.Model):
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        )
+    reviewer = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE
+    )
+    comment = models.TextField()
+    image = models.ImageField(
+        upload_to='diyprojects/project_review/', blank=True, null=True)
+
+    def get_absolute_url(self):
+        return reverse("diyprojects:project-detail", args=[str(self.pk)])
+       
+class ProjectRating(models.Model):
+    project = models.ForeignKey(
+        Project, 
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        )
+    profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE
+    )
+    score = models.IntegerField(
+        validators = [
+            MinValueValidator(1),
+            MaxValueValidator(10)
+        ]
+    )
 
     def get_absolute_url(self):
         return reverse("diyprojects:project-detail", args=[str(self.pk)])
