@@ -1,70 +1,70 @@
-{% extends 'base.html' %}
-{% load static %}
-{% block title %}{{ project.title}}{% endblock %}
+  {% extends 'base.html' %}
+  {% load static %}
+  {% block title %}{{ project.title}}{% endblock %}
 
-{% block content %}
-  <h2>DIY Project: {{ project.title }}</h2>
-  <ul>
-    <li><strong>Category:</strong> {{ project.category }}</li>
-    <li><strong>Creator:</strong> {{ project.creator.display_name }}</li>
-    <li><strong>Materials:</strong> {{ project.materials }}</li>
-    <li><strong>Steps:</strong> {{ project.steps }}</li>
-    <li><strong>Created On:</strong> {{ project.created_on }}</li>
-    <li><strong>Updated on:</strong> {{ project.updated_on }}</li>
-    <li><strong>Average Rating:</strong> {{ average_rating }}</li>
+  {% block content %}
+    <h2>DIY Project: {{ project.title }}</h2>
+    <ul>
+      <li><strong>Category:</strong> {{ project.category }}</li>
+      <li><strong>Creator:</strong> {{ project.creator.display_name }}</li>
+      <li><strong>Materials:</strong> {{ project.materials }}</li>
+      <li><strong>Steps:</strong> {{ project.steps }}</li>
+      <li><strong>Created On:</strong> {{ project.created_on }}</li>
+      <li><strong>Updated on:</strong> {{ project.updated_on }}</li>
+      <li><strong>Average Rating:</strong> {{ average_rating }}</li>
 
-  </ul>
-  <p><strong>Description:</strong> {{ project.description }}</p>
-  <a href="{%url 'diyprojects:project-list'%}">Back to all projects</a>
+    </ul>
+    <p><strong>Description:</strong> {{ project.description }}</p>
+    <a href="{%url 'diyprojects:project-list'%}">Back to all projects</a>
 
-  {% if user.is_authenticated and request.user.profile == project.creator %}
-  <p><a href="{% url 'diyprojects:project-update' project.id %}"> Edit this Project </a></p>
-  {% endif %}
-  
-  {% if request.user.is_authenticated %}
-    <form method ='POST'>
-      {% csrf_token %}
-      <button name="action" value="favorite">
-        {% if is_favorited %}Remove Favorite{% else %}Favorite{% endif %}
-      </button>
-    </form>
-    <p><strong>Favorites: {{ favorite.count }}</p>
-  {% endif %}
+    {% if user.is_authenticated and request.user.profile == project.creator %}
+    <p><a href="{% url 'diyprojects:project-update' project.id %}"> Edit this Project </a></p>
+    {% endif %}
+    
+    {% if request.user.is_authenticated %}
+      <form method ='POST'>
+        {% csrf_token %}
+        <button name="action" value="favorite">
+          {% if is_favorited %}Remove Favorite{% else %}Favorite{% endif %}
+        </button>
+      </form>
+      <p><strong>Favorites: {{ favorite_count }}</p>
+    {% endif %}
 
-   {% if request.user.is_authenticated %}
-    <form method = 'POST'>
-      {% csrf_token %}
-      {{ rating_form.as_p }}
-      <button name='action' value ='rate'>Submit Rating</button>
-    </form>
-  
-  {% else %}
-    <p>Please login to rate</p>
-  {% endif %}
+    {% if request.user.is_authenticated %}
+      <form method = 'POST'>
+        {% csrf_token %}
+        {{ rating_form.as_p }}
+        <button name='action' value ='rate'>Submit Rating</button>
+      </form>
+    
+    {% else %}
+      <p>Please login to rate</p>
+    {% endif %}
 
-  <h3>Reviews<h3>
-  {% for review in reviews %}
-    <p>{{ review.reviewer.display_name }}</p>
-    <p>{{ review.comment }}
+    <h3>Reviews<h3>
+    {% for review in reviews %}
+      <p>{{ review.reviewer.display_name }}</p>
+      <p style="text-indent: 50px;"><small>{{ review.comment }}</small></p>
 
-  {% if review.image %}
-    <img src = "{{ review.image.url }}">
-  
-  {% endif %}
-  
-  {% empty %}
-  <p> This project has no reviews yet <p>
-  {% endfor %}
+    {% if review.image %}
+      <img src = "{{ review.image.url }}" style="margin-left: 50px;" width = 200>
+    
+    {% endif %}
+    
+    {% empty %}
+    <p> This project has no reviews yet <p>
+    {% endfor %}
 
-  {% if request.user.is_authenticated %}
-    <form method = 'POST'>
-      {% csrf_token %}
-      {{ review_form.as_p }}
-      <button name='action' value ='rate'>Submit Review</button>
-    </form>
-  
-  {% else %}
-    <p>Please login to review</p>
-  {% endif %}
+    {% if request.user.is_authenticated %}
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ review_form.as_p }}
+        <button name='action' value ='review'>Submit Review</button>
+      </form>
+    
+    {% else %}
+      <p>Please login to review</p>
+    {% endif %}
 
-{% endblock %}
+  {% endblock %}

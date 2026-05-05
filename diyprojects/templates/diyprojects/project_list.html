@@ -9,7 +9,7 @@
 {% if user.is_authenticated %}
   <h3> Your Created Projects <h3>
   {% for project in created_projects %}
-    <p><a href="{{ item.get_absolute_url }}"> {{ project.title }}</a>/<p>
+    <li><small><a href="{{ project.get_absolute_url }}"> {{ project.title }}</a></small></li>
   
   {% empty %}
     <p><small> You did not create any projects. </small></p>
@@ -17,8 +17,8 @@
 
   <br>
   <h3> Your Favorite Projects <h3>
-  {% for project in created_projects %}
-    <p><a href="{{ item.get_absolute_url }}"> {{ project.title }}</a>/<p>
+  {% for project in favorited_projects %}
+    <li><small><a href="{{ project.get_absolute_url }}"> {{ project.title }}</a></small></li>
   
   {% empty %}
     <p><small> You did not favorite any projects. </small></p>
@@ -26,8 +26,8 @@
 
   <br>
   <h3> Your Reviewed Projects <h3>
-  {% for project in created_projects %}
-    <p><a href="{{ item.get_absolute_url }}"> {{ project.title }}</a>/<p>
+  {% for project in reviewed_projects %}
+    <li><small><a href="{{ project.get_absolute_url }}"> {{ project.title }}</a></small></li>
   
   {% empty %}
     <p><small> You did not review any projects. </small></p>
@@ -35,9 +35,9 @@
 {% endif %}
 
 <br>
-<h3> All other projects <h3>
+<h3> All projects <h3>
   {% for project in all_projects %}
-    <p><small><a href="{{ project.get_absolute_url }}"> {{ project.title }} </small></a> </p>
+    <li><small><a href="{{ project.get_absolute_url }}"> {{ project.title }} </a> </small></li>
 
   {% empty %}
     <p> <small>No projects available. </small><p>

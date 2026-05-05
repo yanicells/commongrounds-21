@@ -22,7 +22,7 @@ class ProjectListView(ListView):
             profile = self.request.user.profile
             context['created_projects'] = Project.objects.filter(creator = profile)
             context['favorited_projects'] = Project.objects.filter(favorite__profile = profile)
-            context['reviewed_projects'] = Project.objects.filter(projectreview__reviewer = profile)
+            context['reviewed_projects'] = Project.objects.filter(projectreview__reviewer = profile).distinct()
             context['all_projects'] = Project.objects.exclude(
                 creator=profile
             ).exclude(
@@ -88,7 +88,7 @@ class ProjectDetailView(DetailView):
 
         elif action == 'review':
             form = ProjectReviewForm(request.POST, request.FILES)
-
+        
             if form.is_valid():
                 review = form.save(commit=False)
                 review.project = self.object
