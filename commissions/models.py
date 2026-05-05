@@ -37,7 +37,7 @@ class Commission(models.Model):
         return f'{self.title}'
 
     def get_absolute_url(self):
-        return reverse('commissions:request-detail', args=[str(self.pk)])
+        return reverse('commissions:commission-detail', args=[str(self.pk)])
 
     class Meta:
         ordering = ['created_on']
@@ -54,7 +54,7 @@ class Job(models.Model):
     applied_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.role}'
+        return f'{self.commission.title}'
 
     class Meta:
         ordering = ['status', 'role']
@@ -65,7 +65,7 @@ class JobApplication(models.Model):
                             related_name='applications')
     applicant = models.ForeignKey(Profile,
                                   on_delete=models.CASCADE,
-                                  related_name='applicant')
+                                  related_name='application')
     status = models.CharField(max_length=10,
                               choices=[('0', 'Pending'),
                                        ('1', 'Accepted'),
