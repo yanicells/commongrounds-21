@@ -17,15 +17,15 @@ class CommissionListView(ListView):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             context['created'] = Commission.objects.filter(
-                maker=self.request.user.profile)
+                maker=self.request.user.profile).order_by('status', '-created_on')
             context['applied'] = Commission.objects.filter(
-                jobs__applications__applicant=self.request.user.profile).distinct()
+                jobs__applications__applicant=self.request.user.profile).distinct().order_by('status', '-created_on')
             context['commission_list'] = Commission.objects.all().exclude(
                 jobs__applications__applicant=self.request.user.profile).exclude(
-                maker=self.request.user.profile).distinct()
+                maker=self.request.user.profile).distinct().order_by('status', '-created_on')
 
         else:
-            context['commission_list'] = Commission.objects.all()
+            context['commission_list'] = Commission.objects.all().order_by('status', '-created_on')
         return context
 
 
@@ -159,3 +159,10 @@ class CommissionUpdateView(RoleRequiredMixin, UpdateView):
     form_class = CommissionForm
     context_object_name = 'field'
     required_role = 'Commission Maker'
+
+    def form_valid(self, form):
+        commission = form.save(commit=False)
+        if not commission.jobs.filter(status='0').exists():
+            commission.status = '1'
+        commission.save()
+        return redirect(commission.get_absolute_url())
