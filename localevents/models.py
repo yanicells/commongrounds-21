@@ -58,8 +58,10 @@ class EventSignup(models.Model):
         related_name='signups'
         )
     user_registrant = models.ForeignKey(
-        Profile, 
-        on_delete=models.CASCADE, 
-        related_name='event_signups'
-        )
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='event_signups',
+        blank=True,
+        null=True,
+    )
     new_registrant = models.CharField(max_length=255, blank=True, null=True)
