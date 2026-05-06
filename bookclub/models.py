@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 from accounts.models import Profile
+from django.utils import timezone
 
 
 class Genre(models.Model):
@@ -81,5 +82,5 @@ class Borrow(models.Model):
         on_delete=models.CASCADE,
     )
     name = models.CharField(max_length=255)
-    date_borrowed = models.DateTimeField(auto_now_add=True)
-    date_to_return = models.DateTimeField()
+    borrow_date = models.DateTimeField(default=timezone.now)
+    date_to_return = models.DateTimeField(null=True, blank=True)
