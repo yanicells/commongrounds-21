@@ -6,6 +6,10 @@
 {% block content %}
 <h2>DIY Projects</h2>
 
+{% if user.is_authenticated and user.profile.role == "Project Creator" %}
+  <p><a href="{% url 'diyprojects:project-add' %}">Create Project</a></p>
+{% endif %}
+
 {% if user.is_authenticated %}
   <h3> Your Created Projects </h3>
   <ul>
@@ -45,12 +49,6 @@
   {% endfor %}
 </ul>
   <br>
-  {% if user.is_authenticated %}
-    {% if user.profile.role == "Project Creator" %}
-      <p><a href="{% url 'diyprojects:project-add' %}">Create Project</a></p>
-    {% endif %}
-  {% endif %}
-  
   <br>
   <a href="{% url 'home' %}">Back to Home</a>
   {% endblock %}

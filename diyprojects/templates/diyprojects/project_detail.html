@@ -39,7 +39,7 @@
       {% endif %}
 
     {% else %}
-      <p>Please login to favorite</p>
+      <p><a href="{% url 'login' %}">Please login to favorite</a></p>
     {% endif %}
     <br>
 
@@ -53,17 +53,16 @@
       </form>
     
     {% else %}
-      <p>Please login to rate</p>
+      <p><a href="{% url 'login' %}">Please login to rate</a></p>
     {% endif %}
     <br>
 
     <h3>Reviews</h3>
     {% for review in reviews %}
-      <p style = 'text-indent: 50px'>{{ review.reviewer.display_name }}: <i>{{ review.comment }}</i></p>
+      <p><strong>{{ review.reviewer.display_name|default:review.reviewer.user.username }}</strong>: <i>{{ review.comment }}</i></p>
 
     {% if review.image %}
-      <img src = "{{ review.image.url }}" style="margin-left: 50px;" width = 200>
-    
+      <img src="{{ review.image.url }}" width="200" alt="Review Image">
     {% endif %}
     
     {% empty %}
@@ -78,7 +77,7 @@
       </form>
     
     {% else %}
-      <p>Please login to review</p>
+      <p><a href="{% url 'login' %}">Please login to review</a></p>
     {% endif %}
 
     <br>

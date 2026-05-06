@@ -117,7 +117,8 @@ class ProjectDetailView(DetailView):
             return redirect(request.path)
 
         elif action == 'rate':
-            form = ProjectRatingForm(request.POST)
+            rating = ProjectRating.objects.filter(project=self.object, profile=request.user.profile).first()
+            form = ProjectRatingForm(request.POST, instance=rating)
 
             if form.is_valid():
                 rating = form.save(commit=False)
