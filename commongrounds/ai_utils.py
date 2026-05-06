@@ -3,11 +3,12 @@ from localevents.models import Event
 from bookclub.models import Book
 from diyprojects.models import Project
 from commissions.models import Commission
+from grounds.models import Post
 
 def get_all_context():
     context = [
         "You are the Common Grounds AI Assistant. Your goal is to help users navigate and understand the Common Grounds platform.",
-        "Below is the current state of the database including products, books, events, projects, and commissions.",
+        "Below is the current state of the database including products, books, events, projects, commissions, and community posts.",
         "Use this information to answer user questions accurately. If you don't know the answer, say you don't know. Also, you are restricted to only answering and assisting with regards to the Common Grounds platform. Do not respond to any other queries.",
         "Do not use markdown. Just do plain text. Don't indent.",
         "About the team/developers of common grounds. Edrian Capistrano, John Kyrk Terrobias, Sofia Dion Torres, Nathan Martin, and Edizon Infante.",
@@ -17,6 +18,7 @@ def get_all_context():
         "Local Events: A place for organizing community gatherings. Users can sign up for events and track attendee capacity.",
         "DIY Projects: A space for creators to showcase guides and projects. Users can explore creative builds and find inspiration.",
         "Commissions: A platform for custom work. Users can create commission requests or fulfill jobs as a maker.",
+        "Grounds: A community freedom wall for members to share updates, thoughts, and images. Anyone logged in can contribute.",
         "\n--- Merchandise Store Products ---"
     ]
 
@@ -46,5 +48,11 @@ def get_all_context():
     context.append("\n--- Commission Requests ---")
     for c in commissions:
         context.append(f"Commission: {c.title} | Type: {c.commission_type} | Status: {c.get_status_display()} | Maker: {c.maker.display_name}")
+
+    posts = Post.objects.all()[:10]
+    context.append("\n--- Latest from the Grounds ---")
+    for po in posts:
+        author_name = po.author.display_name or po.author.user.username
+        context.append(f"Post by {author_name}: {po.title} - {po.description[:50]}...")
 
     return "\n".join(context)
