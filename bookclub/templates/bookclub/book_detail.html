@@ -3,6 +3,7 @@
 
 {% block content %}
 <h2>Book Title: {{ book.title }}</h2>
+
 <ul>
   <li><strong>Genre:</strong> {{ book.genre }}</li>
   <li><strong>Author:</strong> {{ book.author }}</li>
@@ -10,15 +11,14 @@
   <li><strong>Created On:</strong> {{ book.created_on }}</li>
   <li><strong>Updated on:</strong> {{ book.updated_on }}</li>
 </ul>
+
 <p><strong>Synopsis:</strong> {{ book.synopsis }}</p>
 
-<p>
-  <strong>Bookmarks:</strong> {{ bookmarks_count }}
-</p>
+<p><strong>Bookmarks:</strong> {{ bookmarks_count }}</p>
 
 {% if user.is_authenticated %}
   <form method="post">
-{% csrf_token %}
+    {% csrf_token %}
     <button type="submit" name="bookmark">
       {% if is_bookmarked %} Unbookmark {% else %} Bookmark {% endif %}
     </button>
@@ -55,5 +55,6 @@
   {% endfor %}
 </ul>
 
+<br>
 <a href="{% url 'bookclub:book-list' %}">Back to all books</a>
 {% endblock %}
