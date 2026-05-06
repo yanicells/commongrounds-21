@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accounts', '0002_alter_profile_id'),
+        ('accounts', '0001_initial'),
         ('commissions', '0007_alter_job_commission_alter_jobapplication_applicant_and_more'),
     ]
 

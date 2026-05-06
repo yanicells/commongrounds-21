@@ -58,7 +58,7 @@ class Job(models.Model):
         return f'{self.commission.title}'
 
     class Meta:
-        ordering = ['status', 'role']
+        ordering = ['status', '-manpower_required', 'role']
 
 
 class JobApplication(models.Model):

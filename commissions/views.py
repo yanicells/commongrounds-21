@@ -1,5 +1,6 @@
 from django.views.generic import DetailView, ListView, CreateView, UpdateView
 from django.shortcuts import redirect
+from django.contrib.auth.views import redirect_to_login
 from django.urls import reverse_lazy
 from django.db.models import Sum
 from accounts.mixins import RoleRequiredMixin
@@ -46,6 +47,9 @@ class CommissionDetailView(DetailView):
         return context
 
     def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect_to_login(request.get_full_path())
+        
         self.object = self.get_object()
 
         job_id = request.POST.get('button')
@@ -79,10 +83,11 @@ class CommissionDetailView(DetailView):
         return redirect('commissions:commission-detail', pk=self.object.pk)
 
 
-class JobCreateView(CreateView, RoleRequiredMixin):
+class JobCreateView(RoleRequiredMixin, CreateView):
     model = Job
     template_name = 'commissions/commission_update.html'
     form_class = JobForm
+    required_role = 'Commission Maker'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -109,11 +114,12 @@ class JobCreateView(CreateView, RoleRequiredMixin):
             return self.render_to_response(context)
 
 
-class CommissionCreateView(CreateView, RoleRequiredMixin):
+class CommissionCreateView(RoleRequiredMixin, CreateView):
     model = Commission
     template_name = 'commissions/commission_create.html'
     form_class = CommissionForm
     success_url = reverse_lazy('commissions:commission-list')
+    required_role = 'Commission Maker'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -147,10 +153,9 @@ class CommissionCreateView(CreateView, RoleRequiredMixin):
             return self.render_to_response(context)
 
 
-class CommissionUpdateView(UpdateView, RoleRequiredMixin):
+class CommissionUpdateView(RoleRequiredMixin, UpdateView):
     model = Commission
     template_name = 'commissions/commission_update.html'
     form_class = CommissionForm
     context_object_name = 'field'
-    # it doesn't make sense to put the status update here because it only update when you update
-    # the form so to update it in real time, I added that feature in the detail view
+    required_role = 'Commission Maker'
