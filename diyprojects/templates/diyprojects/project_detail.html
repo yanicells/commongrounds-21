@@ -22,12 +22,22 @@
     
     <p><strong>Favorites:</strong> {{ favorite_count }}</p>
     {% if request.user.is_authenticated %}
-      <form method ='POST'>
-        {% csrf_token %}
-        <button name="action" value="favorite">
-          {% if is_favorited %}Remove Favorite{% else %}Favorite{% endif %}
-        </button>
+      {% if is_favorited %}
+        <p>You Favorited this Project on {{ favorites.date_favorited }} - Status: {{ favorites.status }} <p>
+        <form method = 'POST'>
+          {% csrf_token %}
+          <button name='action' value='unfavorite'>Remove Favorite</button>
+        </form>
+      
+      {% else %}
+        <form method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="favorite">
+          {{ favorite_form.status }}
+          <button type='submit'>Favorite</button>
       </form>
+      {% endif %}
+
     {% else %}
       <p>Please login to favorite</p>
     {% endif %}
@@ -49,7 +59,7 @@
 
     <h3>Reviews</h3>
     {% for review in reviews %}
-      <p>{{ review.reviewer.display_name }}: <style="text-indent: 50px;"><i>{{ review.comment }}</i></p>
+      <p style = 'text-indent: 50px'>{{ review.reviewer.display_name }}: <i>{{ review.comment }}</i></p>
 
     {% if review.image %}
       <img src = "{{ review.image.url }}" style="margin-left: 50px;" width = 200>

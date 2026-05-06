@@ -7,7 +7,7 @@ from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from accounts.decorators import role_required
 from accounts.mixins import RoleRequiredMixin
 
-from .forms import ProjectForm, ProjectRatingForm, ProjectReviewForm
+from .forms import ProjectForm, ProjectRatingForm, ProjectReviewForm, FavoriteForm
 from .models import Project, ProjectReview, ProjectRating, Favorite
 
 
@@ -30,7 +30,7 @@ class ProjectListView(ListView):
             ).exclude(
                 projectreview__reviewer = profile
             )
-        
+
         else:
             context['created_projects'] = Project.objects.none()
             context['favorited_projects'] = Project.objects.none()
@@ -54,16 +54,20 @@ class ProjectDetailView(DetailView):
         context['reviews'] = ProjectReview.objects.filter(project = self.get_object())
         context['review_form'] = ProjectReviewForm()
         context['rating_form'] = ProjectRatingForm()
+        context['favorite_form'] = FavoriteForm()
         context['favorite_count'] = Favorite.objects.filter(
                         project = self.get_object() 
                     ).count()
-        
+
         if self.request.user.is_authenticated:
             context['is_favorited'] = Favorite.objects.filter(
                 project = self.get_object(),
                 profile = self.request.user.profile
             ).exists()
-
+            context['favorites'] = Favorite.objects.filter(
+                project = self.get_object(),
+                profile = self.request.user.profile
+            ).first()
 
         return context
 
@@ -75,20 +79,35 @@ class ProjectDetailView(DetailView):
             return redirect_to_login(request.get_full_path())
 
         if action == 'favorite':
-            favorite = Favorite.objects.filter(project = self.object, profile = request.user.profile)
+                favorite = Favorite.objects.filter(
+                    project=self.object,
+                    profile=request.user.profile
+                ).first()
+
+                form = FavoriteForm(request.POST, instance=favorite)
+
+                if form.is_valid():
+                    favorite = form.save(commit=False)
+                    favorite.project = self.object
+                    favorite.profile = request.user.profile
+                    favorite.save()
+
+                return redirect(request.path)
+        
+        elif action == 'unfavorite':
+            favorite = Favorite.objects.filter(
+                project=self.object,
+                profile=request.user.profile
+            )
 
             if favorite.exists():
                 favorite.delete()
-
-            else:
-                new_favorite = Favorite(project = self.object, profile = request.user.profile)
-                new_favorite.save()
 
             return redirect(request.path)
 
         elif action == 'review':
             form = ProjectReviewForm(request.POST, request.FILES)
-        
+
             if form.is_valid():
                 review = form.save(commit=False)
                 review.project = self.object
@@ -107,8 +126,9 @@ class ProjectDetailView(DetailView):
                 rating.save()
 
             return redirect(request.path)
-        
+
         return redirect(request.path)
+
 
 class ProjectCreateView(RoleRequiredMixin, CreateView):
     model = Project
@@ -121,7 +141,8 @@ class ProjectCreateView(RoleRequiredMixin, CreateView):
         project.creator = self.request.user.profile
         project.save()
         return redirect(project.get_absolute_url())
-    
+
+
 @role_required('Project Creator')
 def project_update_view(request, pk):
     project = get_object_or_404(Project, pk=pk)
@@ -134,9 +155,8 @@ def project_update_view(request, pk):
             updated_project.creator = project.creator
             updated_project.save()
             return redirect(updated_project.get_absolute_url())
-    
+
     else:
         form = ProjectForm(instance=project)
 
-    return render(request, 'diyprojects/project_form.html', {'form':form, 'project':project})
-    
+    return render(request, 'diyprojects/project_form.html', {'form':form, 'project':project}) 

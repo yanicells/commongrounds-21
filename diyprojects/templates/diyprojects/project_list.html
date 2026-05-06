@@ -8,48 +8,49 @@
 
 {% if user.is_authenticated %}
   <h3> Your Created Projects </h3>
-  {% for project in created_projects %}
-    <li><a href="{{ project.get_absolute_url }}"> {{ project.title }}</a></li>
-  
-  {% empty %}
-    <p> You did not create any projects. </p>
-  {% endfor %}
-
+  <ul>
+    {% for project in created_projects %}
+      <li><a href="{{ project.get_absolute_url }}"> {{ project.title }}</a></li>
+    {% empty %}
+      <li> You did not create any projects. </li>
+    {% endfor %}
+  </ul>
   <br>
   <h3> Your Favorite Projects </h3>
-  {% for project in favorited_projects %}
-    <li><a href="{{ project.get_absolute_url }}"> {{ project.title }}</a></li>
-  
-  {% empty %}
-    <p> You did not favorite any projects. </p>
-  {% endfor %}
-
+  <ul>
+    {% for project in favorited_projects %}
+      <li><a href="{{ project.get_absolute_url }}"> {{ project.title }}</a></li>
+    {% empty %}
+      <li> You did not favorite any projects. </li>
+    {% endfor %}
+  </ul>
   <br>
   <h3> Your Reviewed Projects </h3>
-  {% for project in reviewed_projects %}
-    <li><a href="{{ project.get_absolute_url }}"> {{ project.title }}</a></li>
-  
-  {% empty %}
-    <p> You did not review any projects. </p>
-  {% endfor %}
+  <ul>
+    {% for project in reviewed_projects %}
+      <li><a href="{{ project.get_absolute_url }}"> {{ project.title }}</a></li>
+    {% empty %}
+      <li> You did not review any projects. </li>
+    {% endfor %}
+  </ul>
 {% endif %}
 
 <br>
 <h3> All projects </h3>
+<ul>
   {% for project in all_projects %}
     <li><a href="{{ project.get_absolute_url }}"> {{ project.title }} </a> </li>
-
   {% empty %}
-    <p> No projects available. <p>
+    <li> No projects available. </li>
   {% endfor %}
-  
+</ul>
   <br>
   {% if user.is_authenticated %}
-  {% if user.profile.role == "Project Creator" %}
-    <a href="{% url 'diyprojects:project-add' %}">Create Project</a>
+    {% if user.profile.role == "Project Creator" %}
+      <p><a href="{% url 'diyprojects:project-add' %}">Create Project</a></p>
     {% endif %}
   {% endif %}
   
   <br>
-  <a href='{% url 'home' %}'>Back to Home</a>
+  <a href="{% url 'home' %}">Back to Home</a>
   {% endblock %}
