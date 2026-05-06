@@ -3,6 +3,7 @@ from django.urls import reverse
 from accounts.models import Profile
 from django.core.validators import MaxValueValidator, MinValueValidator
 
+
 class ProjectCategory(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
@@ -44,24 +45,35 @@ class Project(models.Model):
     def get_absolute_url(self):
         return reverse("diyprojects:project-detail", args=[str(self.pk)])
 
+
 class Favorite(models.Model):
     project = models.ForeignKey(
         Project,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
     )
     profile = models.ForeignKey(
         Profile,
         on_delete=models.CASCADE
     )
     date_favorited = models.DateField(auto_now_add=True)
-    project_status =  [
-        ('Backlog', 'Backlog'),
+    status =  models.CharField(
+        max_length=20,
+        choices =
+        [('Backlog', 'Backlog'),
         ('To-Do', 'To-Do'),
         ('Done', 'Done'),
-    ]
-    
-    def get_absolute_url(self):
-        return reverse("diyprojects:project-detail", args=[str(self.pk)])
+        ],
+        default='Backlog'
+    )
+
+    class Meta:
+        unique_together = ('project', 'profile')
+
+    def __str__(self):
+        return f"{self.profile} - {self.project} ({self.status})"
+
 
 class ProjectReview(models.Model):
     project = models.ForeignKey(
@@ -78,12 +90,13 @@ class ProjectReview(models.Model):
     image = models.ImageField(
         upload_to='diyprojects/project_review/', blank=True, null=True)
 
-    def get_absolute_url(self):
-        return reverse("diyprojects:project-detail", args=[str(self.pk)])
-       
+    def __str__(self):
+        return f"{self.reviewer} - {self.project} ({self.comment})"
+
+
 class ProjectRating(models.Model):
     project = models.ForeignKey(
-        Project, 
+        Project,
         on_delete=models.CASCADE,
         null=True,
         blank=True,
@@ -99,5 +112,5 @@ class ProjectRating(models.Model):
         ]
     )
 
-    def get_absolute_url(self):
-        return reverse("diyprojects:project-detail", args=[str(self.pk)])
+    def __str__(self):
+        return f"{self.profile} - {self.project} ({self.score})"
