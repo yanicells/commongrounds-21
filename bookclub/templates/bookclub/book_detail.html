@@ -19,7 +19,7 @@
 {% if user.is_authenticated %}
   <form method="post">
     {% csrf_token %}
-    <button type="submit" name="bookmark">
+    <button type="submit" name="bookmark" class="btn">
       {% if is_bookmarked %} Unbookmark {% else %} Bookmark {% endif %}
     </button>
   </form>
@@ -33,15 +33,15 @@
   <p><a href="{% url 'bookclub:book-update' book.pk %}">Edit Book</a></p>
 {% endif %}
 
-<hr>
+<hr class="section-divider">
 <h3>Write a Review</h3>
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
-  <button type="submit">Submit Review</button>
+  <button type="submit" class="btn">Submit Review</button>
 </form>
 
-<hr>
+<hr class="section-divider">
 <h3>Reviews</h3>
 <ul>
   {% for review in reviews %}
