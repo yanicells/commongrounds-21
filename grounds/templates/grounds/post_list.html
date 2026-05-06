@@ -26,13 +26,15 @@
         <span>{{ post.created_at|date:"M d, Y H:i" }}</span>
       </header>
       
-      <h3 style="margin: 0.5rem 0;">{{ post.title }}</h3>
+      <h3 style="margin: 0.5rem 0;"><a href="{% url 'grounds:post-detail' post.pk %}" style="text-decoration: none; color: inherit;">{{ post.title }}</a></h3>
       <p>{{ post.description }}</p>
       
       {% if post.image %}
         <img src="{{ post.image.url }}" alt="{{ post.title }}" class="app-image" style="max-width: 300px;">
       {% endif %}
       
+      <p><a href="{% url 'grounds:post-detail' post.pk %}" style="font-size: 0.9rem;">View Post & Comments ({{ post.comments.count }})</a></p>
+
       {% if post.link %}
         <p><a href="{{ post.link }}" target="_blank">{{ post.link }}</a></p>
       {% endif %}
