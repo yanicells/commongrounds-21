@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'diyprojects',
     'localevents',
     'accounts',
+    'grounds',
 ]
 
 MIDDLEWARE = [
