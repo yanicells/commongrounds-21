@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Common Grounds AI Assistant{% endblock %}
+
+{% block content %}
+<h2>AI Assistant</h2>
+<p>Ask anything about our merch store, book club, DIY projects, local events, or commission requests on Common Grounds!</p>
+
+<div class="chatbot-response">{% if output %}{{ output }}{% else %}<i>Response will appear here...</i>{% endif %}</div>
+
+<form method="post">
+    {% csrf_token %}
+    <textarea name="query" placeholder="Type your question here..." required class="chatbot-input"></textarea>
+    <br>
+    <button type="submit" class="btn">Send Question</button>
+</form>
+
+<br>
+<a href="{% url 'home' %}">Back to Home</a>
+{% endblock %}

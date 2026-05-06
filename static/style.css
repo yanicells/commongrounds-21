@@ -150,3 +150,21 @@ select option {
   border-top: 1px solid #ccc;
   margin: 2rem 0;
 }
+
+.chatbot-response {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 0.6rem;
+  min-height: 120px;
+  margin-bottom: 1.2rem;
+  white-space: pre-wrap;
+  line-height: 1.6;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.chatbot-input {
+  height: 120px;
+  resize: vertical;
+}
+
