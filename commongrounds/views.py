@@ -4,12 +4,9 @@ from django.conf import settings
 from .ai_utils import get_all_context
 
 
-from grounds.models import Post
-
 
 def home(request):
-    recent_posts = Post.objects.all()[:4]
-    return render(request, 'home.html', {'recent_posts': recent_posts})
+    return render(request, 'home.html')
 
 
 def chatbot_view(request):
