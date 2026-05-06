@@ -18,7 +18,7 @@ class CommissionListView(ListView):
             context['created'] = Commission.objects.filter(
                 maker=self.request.user.profile)
             context['applied'] = Commission.objects.filter(
-                jobs__applications__applicant=self.request.user.profile)
+                jobs__applications__applicant=self.request.user.profile).distinct()
             context['commission_list'] = Commission.objects.all().exclude(
                 jobs__applications__applicant=self.request.user.profile).exclude(
                 maker=self.request.user.profile).distinct()
@@ -41,43 +41,42 @@ class CommissionDetailView(DetailView):
         )["total"]
         context['total_manpower'] = total_manpower
         total_existing_manpower = Commission.objects.filter(
-            pk=self.object.pk, jobs__applications__status="Accepted").distinct().count()
+            pk=self.object.pk, jobs__applications__status='1').count()
         context['open_manpower'] = total_manpower - total_existing_manpower
-
         return context
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
 
-        job_id = request.POST.get("button")
+        job_id = request.POST.get('button')
 
         if job_id:
             job = Job.objects.get(id=job_id)
 
             if job.applications.filter(applicant=request.user.profile).exists():
-                return redirect("commissions:commission-detail", pk=self.object.pk)
+                return redirect('commissions:commission-detail', pk=self.object.pk)
 
-            accepted = job.applications.filter(status="Accepted").count()
+            accepted = job.applications.filter(status='1').count()
 
             if accepted >= job.manpower_required:
                 job.applications.create(
                     applicant=self.request.user.profile,
-                    status="Rejected")
+                    status='2')
             else:
                 job.applications.create(
                     applicant=self.request.user.profile,
-                    status="Accepted")
+                    status='1')
 
-        accepted = job.applications.filter(status="Accepted").count()
+        accepted = job.applications.filter(status='1').count()
         job.open_positions = job.manpower_required - accepted
         job.save()
         if job.open_positions <= 0:
-            job.status = 'Full'
+            job.status = '1'
         job.save()
-        if not job.commission.jobs.filter(status='Open').exists():
-            job.commission.status = 'Full'
+        if not job.commission.jobs.filter(status='0').exists():
+            job.commission.status = '1'
         job.commission.save()
-        return redirect("commissions:commission-detail", pk=self.object.pk)
+        return redirect('commissions:commission-detail', pk=self.object.pk)
 
 
 class JobCreateView(CreateView, RoleRequiredMixin):
@@ -88,18 +87,21 @@ class JobCreateView(CreateView, RoleRequiredMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = JobForm()
-        context['field'] = Commission.objects.get(id=self.kwargs["pk"])
+        context['field'] = Commission.objects.get(id=self.kwargs['pk'])
         return context
 
     def post(self, request, *args, **kwargs):
         job_form = JobForm(request.POST)
         if job_form.is_valid():
             job = job_form.save(commit=False)
-            job.commission = Commission.objects.get(id=self.kwargs["pk"])
+            job.commission = Commission.objects.get(id=self.kwargs['pk'])
+            job.commission.people_required += job.manpower_required
+            job.commission.status = '0'
             job.open_positions = job.manpower_required
             job.save()
+            job.commission.save()
 
-            return redirect("commissions:commission-detail", pk=self.kwargs["pk"])
+            return redirect("commissions:commission-detail", pk=self.kwargs['pk'])
         else:
             self.object_list = self.get_queryset(**kwargs)
             context = self.get_context_data(**kwargs)
@@ -132,7 +134,7 @@ class CommissionCreateView(CreateView, RoleRequiredMixin):
             job.save()
 
             commission.people_required = commission.jobs.all().aggregate(
-                total=Sum("manpower_required")
+                total=Sum('manpower_required')
             )["total"]
             commission.save()
 

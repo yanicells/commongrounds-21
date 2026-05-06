@@ -29,7 +29,7 @@ class Commission(models.Model):
     people_required = models.PositiveIntegerField(default=1)
     status = models.CharField(max_length=10,
                               choices=[('0', 'Open'), ('1', 'Full')],
-                              default="Open")
+                              default='0')
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
 
@@ -51,7 +51,7 @@ class Job(models.Model):
     open_positions = models.IntegerField()
     status = models.CharField(max_length=10,
                               choices=[('0', 'Open'), ('1', 'Full')],
-                              default="Open")
+                              default='0')
     applied_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -71,7 +71,7 @@ class JobApplication(models.Model):
                               choices=[('0', 'Pending'),
                                        ('1', 'Accepted'),
                                        ('2', 'Rejected')],
-                              default="Pending")
+                              default='0')
     applied_on = models.DateTimeField(auto_now_add=True)
 
     class Meta:
