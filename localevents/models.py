@@ -38,7 +38,7 @@ class Event(models.Model):
     status = models.CharField(
         max_length=32, 
         choices=STATUS_CHOICES,
-        default='upcoming'
+        default='available'
         )
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
