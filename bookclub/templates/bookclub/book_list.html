@@ -4,60 +4,53 @@
 {% block content %}
 <h2>Book Club</h2>
 
-{% if user.is_authenticated and user.profile.role == "Book Contributor" %}
-  <p><a href="{% url 'bookclub:book-create' %}">Add a New Book</a></p>
+{% if user.is_authenticated %}
+  <div style="margin-bottom: 1rem;">
+    {% if user.profile.role == "Book Contributor" %}
+      <a href="{% url 'bookclub:book-create' %}">Add a New Book</a> | 
+    {% endif %}
+    <a href="{% url 'bookclub:book-list' %}">Refresh List</a>
+  </div>
 {% endif %}
 
 {% if user.is_authenticated %}
-  <h3>Your Contributed Books</h3>
   {% if contributed_books %}
+    <h3>Your Contributed Books</h3>
     <ul>
     {% for book in contributed_books %}
       <li><a href="{{ book.get_absolute_url }}">{{ book.title }}</a></li>
     {% endfor %}
     </ul>
-  {% else %}
-    <p>You have not contributed any books.</p>
   {% endif %}
 
-  <br>
-  <h3>Your Bookmarked Books</h3>
   {% if bookmarked_books %}
+    <h3>Your Bookmarked Books</h3>
     <ul>
     {% for book in bookmarked_books %}
       <li><a href="{{ book.get_absolute_url }}">{{ book.title }}</a></li>
     {% endfor %}
     </ul>
-  {% else %}
-    <p>You have not bookmarked any books.</p>
   {% endif %}
 
-  <br>
-  <h3>Your Reviewed Books</h3>
   {% if reviewed_books %}
+    <h3>Your Reviewed Books</h3>
     <ul>
     {% for book in reviewed_books %}
       <li><a href="{{ book.get_absolute_url }}">{{ book.title }}</a></li>
     {% endfor %}
     </ul>
-  {% else %}
-    <p>You have not reviewed any books.</p>
+  {% endif %}
+
+  {% if borrowed_books %}
+    <h3>Your Borrowed Books</h3>
+    <ul>
+    {% for borrow in borrowed_books %}
+      <li><a href="{{ borrow.book.get_absolute_url }}">{{ borrow.book.title }}</a> (Due: {{ borrow.date_to_return|date:'d-m-Y' }})</li>
+    {% endfor %}
+    </ul>
   {% endif %}
 {% endif %}
 
-<br>
-<h3>Your Borrowed Books</h3>
-{% if borrowed_books %}
-  <ul>
-  {% for borrow in borrowed_books %}
-    <li><a href="{{ borrow.book.get_absolute_url }}">{{ borrow.book.title }}</a> (Due: {{ borrow.date_to_return|date:'d-m-Y' }})</li>
-  {% endfor %}
-  </ul>
-{% else %}
-  <p>You have not borrowed any books.</p>
-{% endif %}
-
-<br>
 <h3>All Books</h3>
 {% if all_books %}
   <ul>
