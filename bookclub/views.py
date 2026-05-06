@@ -4,7 +4,7 @@ from django.contrib.auth.views import redirect_to_login
 from django.shortcuts import get_object_or_404, redirect, render
 from accounts.decorators import role_required
 from accounts.mixins import RoleRequiredMixin
-from .models import Book, Genre, BookReview, Bookmark, Borrow
+from .models import Book, Bookmark
 from .forms import BookForm, BookReviewForm, BorrowForm
 from django.utils import timezone
 
@@ -56,15 +56,26 @@ class BookDetailView(DetailView):
             book.contributor == self.request.user.profile
         )
         if self.request.user.is_authenticated and hasattr(self.request.user, 'profile'):
-            context['is_bookmarked'] = Bookmark.objects.filter(profile=self.request.user.profile, book=book).exists()
+            context['is_bookmarked'] = Bookmark.objects.filter(profile=self.request.user.profile,
+            book=book
+        ).exists()
+
 
         return context
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-
         if not request.user.is_authenticated:
             return redirect_to_login(request.get_full_path())
+
+        if 'bookmark' in request.POST:
+            profile = request.user.profile
+            bookmark_qs = Bookmark.objects.filter(profile=profile, book=self.object)
+            if bookmark_qs.exists():
+                bookmark_qs.delete()
+            else:
+                Bookmark.objects.create(profile=profile, book=self.object)
+            return redirect(self.object.get_absolute_url())
 
         form = BookReviewForm(request.POST)
         if form.is_valid():
@@ -78,6 +89,8 @@ class BookDetailView(DetailView):
                 book_review.anon_reviewer = "Anonymous"
             book_review.save()
             return redirect(self.object.get_absolute_url())
+
+        return self.get(request, *args, **kwargs)
 
 
 class BookCreateView(LoginRequiredMixin, RoleRequiredMixin, CreateView):
@@ -115,18 +128,23 @@ class BookBorrowView(LoginRequiredMixin, CreateView):
     form_class = BorrowForm
     template_name = 'bookclub/book_borrow_form.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['book'] = get_object_or_404(Book, pk=self.kwargs['pk'])
+        return context
+
     def get_initial(self):
         initial = super().get_initial()
         if self.request.user.is_authenticated and hasattr(self.request.user, 'profile'):
-            initial['name'] = self.request.user.profile.name
+            initial['name'] = self.request.user.profile.display_name
         return initial
 
     def form_valid(self, form):
         borrow = form.save(commit=False)
         borrow.book = get_object_or_404(Book, pk=self.kwargs['pk'])
         if self.request.user.is_authenticated and hasattr(self.request.user, 'profile'):
-            borrow.profile = self.request.user.profile
-        borrow.return_date = borrow.borrow_date + timezone.timedelta(days=14)
+            borrow.borrower = self.request.user.profile
+        borrow.date_to_return = borrow.borrow_date + timezone.timedelta(days=14)
         borrow.save()
         return redirect(borrow.book.get_absolute_url())
 
