@@ -69,10 +69,10 @@ class BookDetailView(DetailView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if not request.user.is_authenticated:
-            return redirect_to_login(request.get_full_path())
 
         if 'bookmark' in request.POST:
+            if not request.user.is_authenticated:
+                return redirect_to_login(request.get_full_path())
             profile = request.user.profile
             bookmark_qs = Bookmark.objects.filter(profile=profile, book=self.object)
             if bookmark_qs.exists():
@@ -85,7 +85,7 @@ class BookDetailView(DetailView):
         if form.is_valid():
             book_review = form.save(commit=False)
             book_review.book = self.object
-            if hasattr(request.user, 'profile'):
+            if request.user.is_authenticated and hasattr(request.user, 'profile'):
                 book_review.user_reviewer = request.user.profile
                 book_review.anon_reviewer = None
             else:
@@ -127,7 +127,7 @@ def book_update_view(request, pk):
     return render(request, 'bookclub/book_form.html', {'form': form, 'book': book})
 
 
-class BookBorrowView(LoginRequiredMixin, CreateView):
+class BookBorrowView(CreateView):
     model = Book
     form_class = BorrowForm
     template_name = 'bookclub/book_borrow_form.html'
@@ -145,18 +145,17 @@ class BookBorrowView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         book = get_object_or_404(Book, pk=self.kwargs['pk'])
-        profile = self.request.user.profile
+        
+        borrow_obj = form.save(commit=False)
+        borrow_obj.book = book
+        
+        if self.request.user.is_authenticated and hasattr(self.request.user, 'profile'):
+            borrow_obj.borrower = self.request.user.profile
+            borrow_obj.name = self.request.user.profile.display_name
+        else:
+            borrow_obj.borrower = None
 
-        borrow_obj, created = Borrow.objects.get_or_create(
-            book=book,
-            borrower=profile,
-        )
-
-        new_borrow_date = form.cleaned_data['borrow_date']
-        borrow_obj.borrow_date = new_borrow_date
         borrow_obj.date_to_return = borrow_obj.borrow_date + timezone.timedelta(days=14)
-        borrow_obj.name = profile.display_name
-
         borrow_obj.save()
         return redirect(book.get_absolute_url())
 
