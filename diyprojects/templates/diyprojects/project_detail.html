@@ -26,7 +26,7 @@
         <p>You Favorited this Project on {{ favorites.date_favorited }} - Status: {{ favorites.status }} <p>
         <form method = 'POST'>
           {% csrf_token %}
-          <button name='action' value='unfavorite'>Remove Favorite</button>
+          <button name='action' value='unfavorite' class="btn">Remove Favorite</button>
         </form>
       
       {% else %}
@@ -34,7 +34,7 @@
           {% csrf_token %}
           <input type="hidden" name="action" value="favorite">
           {{ favorite_form.status }}
-          <button type='submit'>Favorite</button>
+          <button type='submit' class="btn">Favorite</button>
       </form>
       {% endif %}
 
@@ -49,7 +49,7 @@
       <form method = 'POST'>
         {% csrf_token %}
         {{ rating_form.as_p }}
-        <button name='action' value ='rate'>Submit Rating</button>
+        <button name='action' value ='rate' class="btn">Submit Rating</button>
       </form>
     
     {% else %}
@@ -62,7 +62,7 @@
       <p><strong>{{ review.reviewer.display_name|default:review.reviewer.user.username }}</strong>: <i>{{ review.comment }}</i></p>
 
     {% if review.image %}
-      <img src="{{ review.image.url }}" width="200" alt="Review Image">
+      <img src="{{ review.image.url }}" alt="Review Image" class="app-image">
     {% endif %}
     
     {% empty %}
@@ -73,7 +73,7 @@
       <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ review_form.as_p }}
-        <button name='action' value ='review'>Submit Review</button>
+        <button name='action' value ='review' class="btn">Submit Review</button>
       </form>
     
     {% else %}

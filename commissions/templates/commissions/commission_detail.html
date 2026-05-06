@@ -29,7 +29,7 @@
     {% if user.is_authenticated %}
       <form method="post">
         {% csrf_token %}
-        <button type="submit" name="button" value="{{ job.id }}" {% if job.open_positions <= 0 %}disabled{% endif %}>Apply to Job</button>
+        <button type="submit" name="button" value="{{ job.id }}" class="btn" {% if job.open_positions <= 0 %}disabled{% endif %}>Apply to Job</button>
       </form>
     {% endif %}
   </div>

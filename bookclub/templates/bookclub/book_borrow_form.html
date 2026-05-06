@@ -13,7 +13,7 @@
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Borrow Book</button>
+    <button type="submit" class="btn">Borrow Book</button>
   </form>
 {% else %}
   <p>This book is not available for borrowing right now.</p>
