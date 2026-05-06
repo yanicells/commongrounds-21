@@ -18,7 +18,7 @@
     <div class="post-card">
       <header>
         <div>
-          <strong>{{ post.author.display_name }}</strong>
+          <strong>{{ post.author.display_name|default:post.author.user.username }}</strong>
           {% if post.author.role %}
             <span class="badge">{{ post.author.role }}</span>
           {% endif %}
