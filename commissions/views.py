@@ -77,7 +77,7 @@ class CommissionDetailView(DetailView):
         if job.open_positions <= 0:
             job.status = '1'
         job.save()
-        if not job.commission.jobs.filter(status='0').exists():
+        if job.commission.status == '0' and not job.commission.jobs.filter(status='0').exists():
             job.commission.status = '1'
         job.commission.save()
         return redirect('commissions:commission-detail', pk=self.object.pk)
@@ -162,7 +162,7 @@ class CommissionUpdateView(RoleRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         commission = form.save(commit=False)
-        if not commission.jobs.filter(status='0').exists():
+        if commission.status == '0' and not commission.jobs.filter(status='0').exists():
             commission.status = '1'
         commission.save()
         return redirect(commission.get_absolute_url())
