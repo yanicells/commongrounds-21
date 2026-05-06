@@ -144,7 +144,7 @@ class CommissionCreateView(RoleRequiredMixin, CreateView):
             )["total"]
             commission.save()
 
-            return redirect(self.success_url)
+            return redirect(commission.get_absolute_url())
         else:
             self.object_list = self.get_queryset(**kwargs)
             context = self.get_context_data(**kwargs)
