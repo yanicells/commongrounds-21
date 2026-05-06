@@ -48,6 +48,9 @@ class EventDetailView(DetailView):
             return redirect('localevents:event_signup', event_pk=self.object.pk)
 
         profile = request.user.profile
+        if self.object.organizer.filter(pk=profile.pk).exists():
+             return redirect(self.object.get_absolute_url())
+
         if self.object.event_capacity and self.object.signups.count() >= self.object.event_capacity:
             return redirect(self.object.get_absolute_url())
 
