@@ -168,3 +168,35 @@ select option {
   resize: vertical;
 }
 
+.post-card {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.post-card header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.4rem;
+  margin-bottom: 0.6rem;
+  font-size: 0.9rem;
+}
+
+.post-card .badge {
+  font-size: 0.7rem;
+  padding: 1px 4px;
+  border: 1px solid #333;
+  margin-left: 4px;
+  text-transform: uppercase;
+}
+
+.post-card footer {
+  margin-top: 0.8rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid #eee;
+  font-size: 0.8rem;
+}
+

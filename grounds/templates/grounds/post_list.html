@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Grounds Freedom Wall{% endblock %}
+
+{% block content %}
+<h2>Grounds</h2>
+<p>The community freedom wall. Speak your mind!</p>
+
+{% if user.is_authenticated %}
+  <div style="margin-bottom: 1rem;">
+    <a href="{% url 'grounds:post-create' %}" class="btn">Create New Post</a>
+  </div>
+{% endif %}
+
+<div class="posts-feed">
+  {% for post in posts %}
+    <div class="post-card">
+      <header>
+        <div>
+          <strong>{{ post.author.display_name }}</strong>
+          {% if post.author.role %}
+            <span class="badge">{{ post.author.role }}</span>
+          {% endif %}
+        </div>
+        <span>{{ post.created_at|date:"M d, Y H:i" }}</span>
+      </header>
+      
+      <h3 style="margin: 0.5rem 0;">{{ post.title }}</h3>
+      <p>{{ post.description }}</p>
+      
+      {% if post.image %}
+        <img src="{{ post.image.url }}" alt="{{ post.title }}" class="app-image" style="max-width: 300px;">
+      {% endif %}
+      
+      {% if post.link %}
+        <p><a href="{{ post.link }}" target="_blank">{{ post.link }}</a></p>
+      {% endif %}
+
+      {% if user.is_authenticated and user.profile == post.author %}
+        <footer>
+          <a href="{% url 'grounds:post-update' post.pk %}">Edit Post</a>
+        </footer>
+      {% endif %}
+    </div>
+  {% empty %}
+    <p>No posts yet. Be the first to post!</p>
+  {% endfor %}
+</div>
+
+<br>
+<a href="{% url 'home' %}">Back to Home</a>
+{% endblock %}
