@@ -21,11 +21,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 
-from commongrounds.views import chatbot_view
-
-
-def home(request):
-    return render(request, 'home.html')
+from commongrounds.views import chatbot_view, home
 
 
 urlpatterns = [
@@ -38,6 +34,7 @@ urlpatterns = [
     path('commissions/', include('commissions.urls', namespace='commissions')),
     path('diyprojects/', include('diyprojects.urls', namespace='diyprojects')),
     path('localevents/', include('localevents.urls', namespace='localevents')),
+    path('grounds/', include('grounds.urls', namespace='grounds')),
     path('chatbot/', chatbot_view, name='chatbot'),
 ]
 
