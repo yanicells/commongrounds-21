@@ -15,6 +15,9 @@ class ProjectRatingForm(forms.ModelForm):
     class Meta:
         model = ProjectRating
         fields = ['score']
+        widgets = {
+            'score': forms.NumberInput(attrs={'min': 1, 'max': 10})
+        }
 
 
 class ProjectReviewForm(forms.ModelForm):
