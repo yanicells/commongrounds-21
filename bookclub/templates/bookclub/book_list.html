@@ -30,6 +30,14 @@
 {% endif %}
 
 <br>
+<h3>Your Borrowed Books</h3>
+{% for book in borrowed_books %}
+  <li><a href="{{ book.get_absolute_url }}">{{ book.book.title }} Due: {{ book.date_to_return|date:'d-m-Y' }}</a></li>
+{% empty %}
+  <p>You have not borrowed any books.</p>
+  {% endfor %}
+
+<br>
 <h3>All Books</h3>
 {% for book in all_books %}
   <li><a href="{{ book.get_absolute_url }}">{{ book.title }}</a></li>
