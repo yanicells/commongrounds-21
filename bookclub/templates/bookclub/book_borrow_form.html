@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Borrow Book Form{% endblock %}
+{% block content %}
+<h2>Borrow Book: {{ book.title }}</h2>
+<ul>
+    <li><strong>Author:</strong> {{ book.author }}</li>
+    <li><strong>Genre:</strong> {{ book.genre.name }}</li>
+    <li><strong>Publication Year:</strong> {{ book.publication_year }}</li>
+    <li><strong>Available:</strong> {{ book.available_to_borrow|yesno:"Yes,No" }}</li>
+</ul>
+<p><strong>Synopsis:</strong> {{ book.synopsis }}</p>
+{% if book.available_to_borrow %}
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Borrow Book</button>
+  </form>
+{% else %}
+  <p>This book is not available for borrowing right now.</p>
+{% endif %}
+{% endblock %}

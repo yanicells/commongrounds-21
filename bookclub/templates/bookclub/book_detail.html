@@ -10,5 +10,50 @@
   <li><strong>Created On:</strong> {{ book.created_on }}</li>
   <li><strong>Updated on:</strong> {{ book.updated_on }}</li>
 </ul>
+<p><strong>Synopsis:</strong> {{ book.synopsis }}</p>
+
+<p>
+  <strong>Bookmarks:</strong> {{ bookmarks_count }}
+</p>
+
+{% if user.is_authenticated %}
+  <form method="post">
+{% csrf_token %}
+    <button type="submit" name="bookmark">
+      {% if is_bookmarked %} Unbookmark {% else %} Bookmark {% endif %}
+    </button>
+  </form>
+{% endif %}
+
+{% if book.available_to_borrow %}
+  <p><a href="{% url 'bookclub:book-borrow' book.pk %}">Borrow Book</a></p>
+{% endif %}
+
+{% if can_edit %}
+  <p><a href="{% url 'bookclub:book-update' book.pk %}">Edit Book</a></p>
+{% endif %}
+
+<hr>
+<h3>Write a Review</h3>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Submit Review</button>
+</form>
+
+<hr>
+<h3>Reviews</h3>
+<ul>
+  {% for review in reviews %}
+    <li>
+      <strong>{{ review.user_reviewer.display_name|default:review.anon_reviewer }}</strong>:
+      <em>{{ review.title }}</em><br>
+      {{ review.comment }}
+    </li>
+  {% empty %}
+    <li>No reviews yet.</li>
+  {% endfor %}
+</ul>
+
 <a href="{% url 'bookclub:book-list' %}">Back to all books</a>
 {% endblock %}

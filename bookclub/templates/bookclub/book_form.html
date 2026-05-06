@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Book Form{% endblock %}
+{% block content %}
+  <h2>{% if book %}Edit{% else %}Create{% endif %} Book</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save Book</button>
+  </form>
+{% endblock %}

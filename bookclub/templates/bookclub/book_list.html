@@ -1,18 +1,47 @@
 {% extends 'base.html' %}
-{% load static %}
-
 {% block title %}Book Club{% endblock %}
 
 {% block content %}
 <h2>Book Club</h2>
-<ul>
-  {% for book in books %}
-  <li>
-    <a href="{{ book.get_absolute_url }}"> {{ book.title }} </a>
-  </li>
+
+{% if user.is_authenticated %}
+  <h3>Your Contributed Books</h3>
+  {% for book in contributed_books %}
+    <li><a href="{{ book.get_absolute_url }}">{{ book.title }}</a></li>
   {% empty %}
-  <li>No books available</li>
+    <p>You have not contributed any books.</p>
   {% endfor %}
-</ul>
-<a href="{% url 'home' %}">Back to home</a>
+
+  <br>
+  <h3>Your Bookmarked Books</h3>
+  {% for book in bookmarked_books %}
+    <li><a href="{{ book.get_absolute_url }}">{{ book.title }}</a></li>
+  {% empty %}
+    <p>You have not bookmarked any books.</p>
+  {% endfor %}
+
+  <br>
+  <h3>Your Reviewed Books</h3>
+  {% for book in reviewed_books %}
+    <li><a href="{{ book.get_absolute_url }}">{{ book.title }}</a></li>
+  {% empty %}
+    <p>You have not reviewed any books.</p>
+  {% endfor %}
+{% endif %}
+
+<br>
+<h3>All Books</h3>
+{% for book in all_books %}
+  <li><a href="{{ book.get_absolute_url }}">{{ book.title }}</a></li>
+{% empty %}
+  <p>No books available.</p>
+{% endfor %}
+
+<br>
+{% if user.is_authenticated and user.profile.role == "Book Contributor" %}
+  <a href="{% url 'bookclub:book-create' %}">Add a New Book</a>
+{% endif %}
+
+<br>
+<a href="{% url 'home' %}">Back to Home</a>
 {% endblock %}
