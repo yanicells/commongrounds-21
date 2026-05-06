@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Create Local Event{% endblock %}
+{% block content %}
+<h2>Create Local Event</h2>
+
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Save Event</button>
+</form>
+
+<br>
+{% if event %}
+  <a href="{{ event.get_absolute_url }}">Back to event</a>
+{% else %}
+  <a href="{% url 'localevents:event_list' %}">Cancel</a>
+{% endif %}
+{% endblock content %}

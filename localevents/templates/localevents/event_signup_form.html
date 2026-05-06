@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}{{ event.title }}{% endblock %}
+{% block title %}Event Signup{% endblock %}
 {% block content %}
-<h2>Local Event: {{ event.title }}</h2>
+<h2>Sign up for {{ event.title }}</h2>
 <ul>
     <li><strong>Category:</strong> {{ event.category }}<br></li>
     <li><strong>Organizer:</strong> {{ event.organizer.first }}<br></li>
@@ -20,24 +20,14 @@
     <li><strong>Number of Signups:</strong> {{ event.signups.count }}<br></li>
 </ul>
 <p><strong>Description:</strong> {{ event.description }}</p>
-    <form method="post">
-        {% csrf_token %}
-        {% if not is_organizer and not has_signed_up %}
-            <button type="submit" {% if is_full %}disabled{% endif %}>Sign up</button>
-        {% elif has_signed_up %}
-            <button disabled>Sign up</button>
-            <p>You are already signed up for this event.</p>
-        {% elif request.user.is_authenticated and is_organizer %}
-            <button disabled>Sign up</button>
-            <p>Organizers cannot sign up for their own event.</p>
-        {% endif %}
-    </form>
-{% if request.user.is_authenticated %}
-  <div style="margin-bottom: 1rem;">
-    {% if is_organizer %}
-      <a href="{% url 'localevents:event_update' event.pk %}">Update Event</a>  
-    {% endif %}
-  </div>
+{% if event.event_capacity and event.signups.count >= event.event_capacity %}
+<p>This event is full.</p>
+{% else %}
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Submit</button>
+</form>
 {% endif %}
-<a href="{% url 'localevents:event_list' %}">Back to all events</a>
-{% endblock content %}
+<a href="{% url 'localevents:event_detail' event.pk %}">Back to event</a>
+{% endblock %}
