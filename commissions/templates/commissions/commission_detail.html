@@ -31,13 +31,13 @@
     <form method="post">
       {% csrf_token %}
       {{ form.as_p }}
-      <button type="submit" name="button" value="{{ job.id }}"{% if job.open_positions <= 0 and applied_job %}disabled{% endif %}>Apply to Job</button>
+      <button type="submit" name="button" value="{{ job.id }}"{% if job.open_positions <= 0 %}disabled{% endif %}>Apply to Job</button>
     </form>
   {% endif %}
 <br><br>
 {% endfor %}
 
-{% if user.is_authenticated and user.profile %}
+{% if user.is_authenticated and user.profile == commission.maker %}
   <p><a href="{% url 'commissions:commission-job-create' commission.pk %}">Create Job</a></p> 
   <p><a href="{% url 'commissions:commission-update' commission.pk %}">Edit Commission</a></p> 
 {% endif %}
