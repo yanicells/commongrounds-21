@@ -31,7 +31,7 @@
       <div class="navbar-auth">
         {% if user.is_authenticated %}
           <span>Hello, 
-            <a href="{% url 'accounts:profile_update' username=user.username %}" style="font-weight: bold;">
+            <a href="{% url 'accounts:dashboard' %}" style="font-weight: bold;">
               {{ user.profile.display_name|default:user.username }}
             </a>!
           </span>
