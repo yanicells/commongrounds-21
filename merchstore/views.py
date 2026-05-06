@@ -10,9 +10,9 @@ from .forms import ProductForm, TransactionForm
 from .models import Product, Transaction
 
 
-class ItemListView(ListView):
+class ProductListView(ListView):
     model = Product
-    template_name = 'merchstore/item_list.html'
+    template_name = 'merchstore/product_list.html'
     context_object_name = 'products'
 
     def get_context_data(self, **kwargs):
@@ -27,9 +27,9 @@ class ItemListView(ListView):
         return context
 
 
-class ItemDetailView(DetailView):
+class ProductDetailView(DetailView):
     model = Product
-    template_name = 'merchstore/item_detail.html'
+    template_name = 'merchstore/product_detail.html'
     context_object_name = 'product'
 
     def get_context_data(self, **kwargs):
@@ -71,10 +71,10 @@ class ItemDetailView(DetailView):
         return self.render_to_response(context)
 
 
-class ItemCreateView(RoleRequiredMixin, CreateView):
+class ProductCreateView(RoleRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
-    template_name = 'merchstore/item_form.html'
+    template_name = 'merchstore/product_form.html'
     required_role = 'Market Seller'
 
     def form_valid(self, form):
@@ -85,7 +85,7 @@ class ItemCreateView(RoleRequiredMixin, CreateView):
 
 
 @role_required('Market Seller')
-def item_update_view(request, pk):
+def product_update_view(request, pk):
     product = get_object_or_404(Product, pk=pk)
 
     if request.method == 'POST':
@@ -103,7 +103,7 @@ def item_update_view(request, pk):
     else:
         form = ProductForm(instance=product)
 
-    return render(request, 'merchstore/item_form.html', {'form': form, 'product': product})
+    return render(request, 'merchstore/product_form.html', {'form': form, 'product': product})
 
 
 class CartView(LoginRequiredMixin, ListView):

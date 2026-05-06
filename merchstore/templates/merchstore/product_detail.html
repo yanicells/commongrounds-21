@@ -18,7 +18,7 @@
 <p><strong>Description:</strong> {{ product.description }}</p>
 
 {% if request.user.is_authenticated and request.user.profile == product.owner %}
-  <p><a href="{% url 'merchstore:item-update' product.pk %}">Edit Product</a></p>
+  <p><a href="{% url 'merchstore:product-update' product.pk %}">Edit Product</a></p>
 {% elif product.owner != request.user.profile %}
   <hr>
   <h3>Buy this item</h3>
@@ -30,5 +30,5 @@
 {% endif %}
 
 <br>
-<a href="{% url 'merchstore:item-list' %}">Back to all products</a>
+<a href="{% url 'merchstore:product-list' %}">Back to all products</a>
 {% endblock content %}
