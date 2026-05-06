@@ -4,7 +4,7 @@ from .models import Event, EventSignup
 class EventForm(forms.ModelForm): 
     class Meta: 
         model = Event 
-        exclude = ['organizer', 'category']
+        exclude = ['organizer']
     
 class EventSignupForm(forms.ModelForm):
     class Meta:
