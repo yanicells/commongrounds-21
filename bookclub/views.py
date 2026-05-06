@@ -1,10 +1,12 @@
+import profile
+
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import redirect_to_login
 from django.shortcuts import get_object_or_404, redirect, render
 from accounts.decorators import role_required
 from accounts.mixins import RoleRequiredMixin
-from .models import Book, Bookmark
+from .models import Book, Bookmark, Borrow
 from .forms import BookForm, BookReviewForm, BorrowForm
 from django.utils import timezone
 
@@ -23,6 +25,7 @@ class BookListView(ListView):
             context['contributed_books'] = Book.objects.filter(contributor=profile)
             context['bookmarked_books'] = Book.objects.filter(bookmark__profile=profile)
             context['reviewed_books'] = Book.objects.filter(bookreview__user_reviewer=profile)
+            context['borrowed_books'] = Borrow.objects.filter(borrower=profile).distinct()
             context['all_books'] = Book.objects.exclude(
                 contributor=profile
                 ).exclude(
@@ -31,6 +34,7 @@ class BookListView(ListView):
                 bookreview__user_reviewer=profile
                 )
         else:
+            context['borrowed_books'] = Borrow.objects.none()
             context['contributed_books'] = Book.objects.none()
             context['bookmarked_books'] = Book.objects.none()
             context['reviewed_books'] = Book.objects.none()
@@ -140,13 +144,21 @@ class BookBorrowView(LoginRequiredMixin, CreateView):
         return initial
 
     def form_valid(self, form):
-        borrow = form.save(commit=False)
-        borrow.book = get_object_or_404(Book, pk=self.kwargs['pk'])
-        if self.request.user.is_authenticated and hasattr(self.request.user, 'profile'):
-            borrow.borrower = self.request.user.profile
-        borrow.date_to_return = borrow.borrow_date + timezone.timedelta(days=14)
-        borrow.save()
-        return redirect(borrow.book.get_absolute_url())
+        book = get_object_or_404(Book, pk=self.kwargs['pk'])
+        profile = self.request.user.profile
+
+        borrow_obj, created = Borrow.objects.get_or_create(
+            book=book,
+            borrower=profile,
+        )
+
+        new_borrow_date = form.cleaned_data['borrow_date']
+        borrow_obj.borrow_date = new_borrow_date
+        borrow_obj.date_to_return = borrow_obj.borrow_date + timezone.timedelta(days=14)
+        borrow_obj.name = profile.display_name
+
+        borrow_obj.save()
+        return redirect(book.get_absolute_url())
 
 
 
