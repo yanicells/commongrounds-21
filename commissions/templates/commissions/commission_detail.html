@@ -5,41 +5,42 @@
 {% block content %}
 <h2>Commission: {{ commission.title }}</h2>
 
-<p><ul>
-  <li><strong>Commission Type:</strong> {{ commission.commission_type }}<br></li>
-  <li><strong>People Required:</strong> {{ total_manpower }}<br></li>
+<ul>
+  <li><strong>Commission Type:</strong> {{ commission.commission_type }}</li>
+  <li><strong>People Required:</strong> {{ total_manpower }}</li>
   <li><strong>Open Manpower:</strong> {{ open_manpower }}</li>
   <li><strong>Status:</strong> {{ commission.get_status_display }}</li>
-  <li><strong>Created on:</strong> {{ commission.created_on }}<br></li>
-  <li><strong>Updated on:</strong> {{ commission.updated_on }}<br></li>
-</p></ul>
+  <li><strong>Created on:</strong> {{ commission.created_on }}</li>
+  <li><strong>Updated on:</strong> {{ commission.updated_on }}</li>
+</ul>
 
-<p><strong>Description:</strong><br>{{ commission.description }}</p><br>
+<p><strong>Description:</strong> {{ commission.description }}</p>
 
-<h2>Jobs</h2>
-  {% for job in commission.jobs.all %}
-  <p><ul>
-    <li><strong>Role:</strong> {{ job.role }}</li>
-    <li><strong>People Required:</strong> {{ job.manpower_required }}</li>
-    <li><strong>Open Manpower:</strong> {{ job.open_positions }}</li>
-    <li><strong>Status:</strong> {{ job.get_status_display }}</li>
-  </ul></p>
+<h3>Jobs Required</h3>
+{% for job in commission.jobs.all %}
+  <div style="border: 1px solid #ddd; padding: 1rem; margin-bottom: 1rem;">
+    <ul>
+      <li><strong>Role:</strong> {{ job.role }}</li>
+      <li><strong>People Required:</strong> {{ job.manpower_required }}</li>
+      <li><strong>Open Manpower:</strong> {{ job.open_positions }}</li>
+      <li><strong>Status:</strong> {{ job.get_status_display }}</li>
+    </ul>
 
-  
-  {% if user.is_authenticated %}
-    <hr>
-    <form method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit" name="button" value="{{ job.id }}"{% if job.open_positions <= 0 %}disabled{% endif %}>Apply to Job</button>
-    </form>
-  {% endif %}
-<br><br>
+    {% if user.is_authenticated %}
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit" name="button" value="{{ job.id }}" {% if job.open_positions <= 0 %}disabled{% endif %}>Apply to Job</button>
+      </form>
+    {% endif %}
+  </div>
 {% endfor %}
 
 {% if user.is_authenticated and user.profile == commission.maker %}
-  <p><a href="{% url 'commissions:commission-job-create' commission.pk %}">Create Job</a></p> 
-  <p><a href="{% url 'commissions:commission-update' commission.pk %}">Edit Commission</a></p> 
+  <div style="margin-bottom: 1rem;">
+    <a href="{% url 'commissions:commission-job-create' commission.pk %}">Add Job Role</a> | 
+    <a href="{% url 'commissions:commission-update' commission.pk %}">Edit Commission</a>
+  </div>
 {% endif %}
+
 <a href="{% url 'commissions:commission-list' %}">Back to all commissions</a>
 {% endblock %}

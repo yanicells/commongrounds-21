@@ -44,7 +44,7 @@ class Product(models.Model):
         return f'{self.name}'
 
     def get_absolute_url(self):
-        return reverse('merchstore:item-detail', args=[str(self.pk)])
+        return reverse('merchstore:product-detail', args=[str(self.pk)])
 
 
 class Transaction(models.Model):

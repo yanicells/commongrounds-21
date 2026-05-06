@@ -4,20 +4,20 @@
 {% block content %}
 <h2>Local Event: {{ event.title }}</h2>
 <ul>
-    <li><strong>Category:</strong> {{ event.category }}<br></li>
-    <li><strong>Organizer:</strong> {{ event.organizer.first }}<br></li>
+    <li><strong>Category:</strong> {{ event.category }}</li>
+    <li><strong>Organizer:</strong> {{ event.organizer.first.display_name }}</li>
     {% if event.event_image %}
-    <li><strong>Event image:</strong><br>
-      <img src="{{ event.event_image.url }}" alt="{{ event.title }}" style="max-width: 300px; display: block; margin-bottom: 1rem;">
+    <li>
+      <strong>Event Image:</strong><br>
+      <img src="{{ event.event_image.url }}" alt="{{ event.title }}" style="max-width: 300px; display: block; margin-top: 0.5rem; margin-bottom: 1rem;">
+    </li>
     {% endif %}
-    <li><strong>Location:</strong> {{ event.location }}<br></li>
-    <li><strong>Start Time: </strong> {{ event.start_time }}<br></li>
-    <li><strong>End Time: </strong> {{ event.end_time }}<br></li>
-    <li><strong>Created on:</strong> {{ event.created_on }}<br></li>
-    <li><strong>Updated on:</strong> {{ event.updated_on }}<br></li>
-    <li><strong>Status:</strong> {{ event.status }}<br></li>
-    <li><strong>Max Attendees:</strong> {{ event.event_capacity }}<br></li>
-    <li><strong>Number of Signups:</strong> {{ event.signups.count }}<br></li>
+    <li><strong>Location:</strong> {{ event.location }}</li>
+    <li><strong>Start Time: </strong> {{ event.start_time }}</li>
+    <li><strong>End Time: </strong> {{ event.end_time }}</li>
+    <li><strong>Status:</strong> {{ event.get_status_display }}</li>
+    <li><strong>Max Attendees:</strong> {{ event.event_capacity }}</li>
+    <li><strong>Signups:</strong> {{ event.signups.count }}</li>
 </ul>
 <p><strong>Description:</strong> {{ event.description }}</p>
     <form method="post">

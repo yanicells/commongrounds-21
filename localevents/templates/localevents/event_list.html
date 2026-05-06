@@ -8,8 +8,9 @@
 {% if request.user.is_authenticated %}
   <div style="margin-bottom: 1rem;">
     {% if request.user.profile.role == 'Event Organizer' %}
-      <a href="{% url 'localevents:event_create' %}">Create New Event</a>  
+      <a href="{% url 'localevents:event_create' %}">Create New Event</a> | 
     {% endif %}
+    <a href="{% url 'localevents:event_list' %}">Refresh List</a>
   </div>
 {% endif %}
 {% if created_events %}
