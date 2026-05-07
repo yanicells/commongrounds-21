@@ -85,7 +85,7 @@ class BookDetailView(DetailView):
         if form.is_valid():
             book_review = form.save(commit=False)
             book_review.book = self.object
-            if hasattr(request.user, 'profile'):
+            if request.user.is_authenticated and hasattr(request.user, 'profile'):
                 book_review.user_reviewer = request.user.profile
                 book_review.anon_reviewer = None
             else:

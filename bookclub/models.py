@@ -82,6 +82,8 @@ class Borrow(models.Model):
     borrower = models.ForeignKey(
         Profile,
         on_delete=models.CASCADE,
+        null=True,
+        blank=True,
     )
     name = models.CharField(max_length=255)
     borrow_date = models.DateTimeField(default=timezone.now)
