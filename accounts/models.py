@@ -14,7 +14,7 @@ class Profile(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name="profile")
     display_name = models.CharField(max_length=63)
-    email_address = models.EmailField()
+    email_address = models.EmailField(blank=True)
     role = models.CharField(max_length=63, choices=ROLE_CHOICES, blank=True)
 
     def __str__(self):

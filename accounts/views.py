@@ -20,7 +20,11 @@ class RegisterView(CreateView):
 
     def form_valid(self, form):
         user = form.save()
-        Profile.objects.create(user=user)
+        Profile.objects.create(
+            user=user,
+            display_name=user.username,
+            email_address=user.email
+        )
         login(self.request, user)
         return redirect(self.success_url)
 
