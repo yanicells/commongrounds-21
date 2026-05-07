@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h2>User Dashboard</h2>
+<p>Welcome, {{ user.profile.display_name|default:user.username }}! Here are all your contributions across Common Grounds.</p>
+
+<div style="margin-bottom: 1rem;">
+    <a href="{% url 'accounts:profile_update' username=user.username %}">Edit Profile</a>
+</div>
+
+<hr class="section-divider">
+
+{% if products %}
+    <h3>Your Products (MerchStore)</h3>
+    <ul>
+        {% for product in products %}
+            <li><a href="{{ product.get_absolute_url }}">{{ product.name }}</a> - {{ product.status }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if events %}
+    <h3>Your Organized Events (LocalEvents)</h3>
+    <ul>
+        {% for event in events %}
+            <li><a href="{{ event.get_absolute_url }}">{{ event.title }}</a> - {{ event.status }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if books %}
+    <h3>Your Contributed Books (BookClub)</h3>
+    <ul>
+        {% for book in books %}
+            <li><a href="{{ book.get_absolute_url }}">{{ book.title }}</a></li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if projects %}
+    <h3>Your DIY Projects (DIYProjects)</h3>
+    <ul>
+        {% for project in projects %}
+            <li><a href="{{ project.get_absolute_url }}">{{ project.title }}</a></li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if commissions %}
+    <h3>Your Commission Requests (Commissions)</h3>
+    <ul>
+        {% for commission in commissions %}
+            <li><a href="{{ commission.get_absolute_url }}">{{ commission.title }}</a> - {{ commission.get_status_display }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if not products and not events and not books and not projects and not commissions %}
+    <p>You haven't created any items yet. Start contributing to see them here!</p>
+{% endif %}
+
+<br>
+<a href="{% url 'home' %}">Back to Home</a>
+{% endblock %}

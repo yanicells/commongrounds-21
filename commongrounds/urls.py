@@ -20,8 +20,9 @@ from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
 
-def home(request):
-    return render(request, 'home.html')
+
+from commongrounds.views import chatbot_view, home
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,7 +30,15 @@ urlpatterns = [
     path('bookclub/', include('bookclub.urls', namespace='bookclub')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/', include('accounts.urls', namespace='accounts')),
+    path('merchstore/', include('merchstore.urls', namespace='merchstore')),
+    path('bookclub/', include('bookclub.urls', namespace='bookclub')),
+    path('commissions/', include('commissions.urls', namespace='commissions')),
+    path('diyprojects/', include('diyprojects.urls', namespace='diyprojects')),
+    path('localevents/', include('localevents.urls', namespace='localevents')),
+    path('grounds/', include('grounds.urls', namespace='grounds')),
+    path('chatbot/', chatbot_view, name='chatbot'),
 ]
 
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

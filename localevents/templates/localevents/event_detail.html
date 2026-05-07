@@ -4,13 +4,40 @@
 {% block content %}
 <h2>Local Event: {{ event.title }}</h2>
 <ul>
-    <li><strong>Category:</strong> {{ event.category }}<br></li>
-    <li><strong>Location:</strong> {{ event.location }}<br></li>
-    <li><strong>Start Time: </strong> {{ event.start_time }}<br></li>
-    <li><strong>End Time: </strong> {{ event.end_time }}<br></li>
-    <li><strong>Created on:</strong> {{ event.created_on }}<br></li>
-    <li><strong>Updated on:</strong> {{ event.updated_on }}<br></li>
+    <li><strong>Category:</strong> {{ event.category }}</li>
+    <li><strong>Organizer:</strong> {{ event.organizer.first.display_name }}</li>
+    {% if event.event_image %}
+    <li>
+      <strong>Event Image:</strong><br>
+      <img src="{{ event.event_image.url }}" alt="{{ event.title }}" class="app-image">
+    </li>
+    {% endif %}
+    <li><strong>Location:</strong> {{ event.location }}</li>
+    <li><strong>Start Time: </strong> {{ event.start_time }}</li>
+    <li><strong>End Time: </strong> {{ event.end_time }}</li>
+    <li><strong>Status:</strong> {{ event.get_status_display }}</li>
+    <li><strong>Max Attendees:</strong> {{ event.event_capacity }}</li>
+    <li><strong>Signups:</strong> {{ event.signups.count }}</li>
 </ul>
 <p><strong>Description:</strong> {{ event.description }}</p>
+    <form method="post">
+        {% csrf_token %}
+        {% if not is_organizer and not has_signed_up %}
+            <button type="submit" class="btn" {% if is_full %}disabled{% endif %}>Sign up</button>
+        {% elif has_signed_up %}
+            <button class="btn" disabled>Sign up</button>
+            <p>You are already signed up for this event.</p>
+        {% elif request.user.is_authenticated and is_organizer %}
+            <button class="btn" disabled>Sign up</button>
+            <p>Organizers cannot sign up for their own event.</p>
+        {% endif %}
+    </form>
+{% if request.user.is_authenticated %}
+  <div style="margin-bottom: 1rem;">
+    {% if is_organizer %}
+      <a href="{% url 'localevents:event_update' event.pk %}">Update Event</a>  
+    {% endif %}
+  </div>
+{% endif %}
 <a href="{% url 'localevents:event_list' %}">Back to all events</a>
 {% endblock content %}

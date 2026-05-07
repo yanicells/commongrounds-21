@@ -1,16 +1,85 @@
-{% extends 'base.html' %}
-{% load static %}
-{% block title %}{{ project.title}}{% endblock %}
+  {% extends 'base.html' %}
+  {% load static %}
+  {% block title %}{{ project.title}}{% endblock %}
 
-{% block content %}
-  <h2>DIY Project: {{ project.title }}</h2>
-  <ul>
-    <li><strong>Category:</strong> {{ project.category }}</li>
-    <li><strong>Materials:</strong> {{ project.materials }}</li>
-    <li><strong>Steps:</strong> {{ project.steps }}</li>
-    <li><strong>Created On:</strong> {{ project.created_on }}</li>
-    <li><strong>Updated on:</strong> {{ project.updated_on }}</li>
-  </ul>
-  <p><strong>Description:</strong> {{ project.description }}</p>
-  <a href="{%url 'diyprojects:project-list'%}">Back to all projects</a>
-{% endblock %}
+  {% block content %}
+    <h2>DIY Project: {{ project.title }}</h2>
+    <ul>
+      <li><strong>Category:</strong> {{ project.category }}</li>
+      <li><strong>Creator:</strong> {{ project.creator.display_name }}</li>
+      <li><strong>Materials:</strong> {{ project.materials }}</li>
+      <li><strong>Steps:</strong> {{ project.steps }}</li>
+      <li><strong>Created On:</strong> {{ project.created_on }}</li>
+      <li><strong>Updated on:</strong> {{ project.updated_on }}</li>
+
+    </ul>
+    <p><strong>Description:</strong> {{ project.description }}</p>
+
+    {% if user.is_authenticated and request.user.profile == project.creator %}
+    <p><a href="{% url 'diyprojects:project-update' project.id %}"> Edit Project </a></p>
+    {% endif %}
+    <br>
+    
+    <p><strong>Favorites:</strong> {{ favorite_count }}</p>
+    {% if request.user.is_authenticated %}
+      {% if is_favorited %}
+        <p>You Favorited this Project on {{ favorites.date_favorited }} - Status: {{ favorites.status }} <p>
+        <form method = 'POST'>
+          {% csrf_token %}
+          <button name='action' value='unfavorite' class="btn">Remove Favorite</button>
+        </form>
+      
+      {% else %}
+        <form method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="favorite">
+          {{ favorite_form.status }}
+          <button type='submit' class="btn">Favorite</button>
+      </form>
+      {% endif %}
+
+    {% else %}
+      <p><a href="{% url 'login' %}">Please login to favorite</a></p>
+    {% endif %}
+    <br>
+
+    <h3>Rating</h3>
+    <p><strong>Average Rating:</strong> {{ average_rating }}</p>
+    {% if request.user.is_authenticated %}
+      <form method = 'POST'>
+        {% csrf_token %}
+        {{ rating_form.as_p }}
+        <button name='action' value ='rate' class="btn">Submit Rating</button>
+      </form>
+    
+    {% else %}
+      <p><a href="{% url 'login' %}">Please login to rate</a></p>
+    {% endif %}
+    <br>
+
+    <h3>Reviews</h3>
+    {% for review in reviews %}
+      <p><strong>{{ review.reviewer.display_name|default:review.reviewer.user.username }}</strong>: <i>{{ review.comment }}</i></p>
+
+    {% if review.image %}
+      <img src="{{ review.image.url }}" alt="Review Image" class="app-image">
+    {% endif %}
+    
+    {% empty %}
+    <p> This project has no reviews yet <p>
+    {% endfor %}
+    <br>
+    {% if request.user.is_authenticated %}
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ review_form.as_p }}
+        <button name='action' value ='review' class="btn">Submit Review</button>
+      </form>
+    
+    {% else %}
+      <p><a href="{% url 'login' %}">Please login to review</a></p>
+    {% endif %}
+
+    <br>
+    <a href="{%url 'diyprojects:project-list'%}">Back to all projects</a>
+  {% endblock %}

@@ -73,7 +73,6 @@ class BookDetailView(DetailView):
         if 'bookmark' in request.POST:
             if not request.user.is_authenticated:
                 return redirect_to_login(request.get_full_path())
-
             profile = request.user.profile
             bookmark_qs = Bookmark.objects.filter(profile=profile, book=self.object)
             if bookmark_qs.exists():
@@ -165,16 +164,3 @@ class BookBorrowView(LoginRequiredMixin, CreateView):
 
         borrow_obj.save()
         return redirect(book.get_absolute_url())
-
-
-
-
-
-
-
-
-
-
-
-
-

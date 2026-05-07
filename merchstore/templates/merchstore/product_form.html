@@ -7,13 +7,13 @@
 <form method="post" enctype="multipart/form-data">
   {% csrf_token %}
   {{ form.as_p }}
-  <button type="submit">Save Product</button>
+  <button type="submit" class="btn">Save Product</button>
 </form>
 
 <br>
 {% if product %}
   <a href="{{ product.get_absolute_url }}">Back to product</a>
 {% else %}
-  <a href="{% url 'merchstore:item-list' %}">Cancel</a>
+  <a href="{% url 'merchstore:product-list' %}">Cancel</a>
 {% endif %}
 {% endblock content %}

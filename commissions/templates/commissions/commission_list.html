@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Commission Requests{% endblock %}
+
+{% block content %}
+<h2>Commissions</h2>
+
+{% if user.is_authenticated %}
+  <div style="margin-bottom: 1rem;">
+    {% if user.profile.role == "Commission Maker" %}
+      <a href="{% url 'commissions:commission-create' %}">Create New Commission</a> | 
+    {% endif %}
+    <a href="{% url 'commissions:commission-list' %}">Refresh List</a>
+  </div>
+{% endif %}
+
+{% if user.is_authenticated %}
+  {% if created %}
+    <h3>Your Commissions</h3>
+    <ul>
+    {% for commission in created %}
+      <li>
+        <a href="{{ commission.get_absolute_url }}">{{ commission.title }}</a> - {{ commission.get_status_display }}
+      </li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+
+  {% if applied %}
+    <h3>Applied Commissions</h3>
+    <ul>
+    {% for commission in applied %}
+      <li>
+        <a href="{{ commission.get_absolute_url }}">{{ commission.title }}</a> - {{ commission.get_status_display }}
+      </li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+
+  <h3>All Other Commissions</h3>
+{% else %}
+  <h3>All Commissions</h3>
+{% endif %}
+
+<ul>
+{% for commission in commission_list %}
+  <li>
+    <a href="{{ commission.get_absolute_url }}">{{ commission.title }}</a> - {{ commission.get_status_display }}
+  </li>
+{% empty %}
+  <li>No commissions available</li>
+{% endfor %}
+</ul>   
+
+<br><a href="{% url 'home' %}">Back to home</a>
+{% endblock %}

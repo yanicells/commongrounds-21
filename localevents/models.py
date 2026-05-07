@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from accounts.models import Profile
 
 
 class EventType(models.Model):
@@ -14,6 +15,12 @@ class EventType(models.Model):
 
 
 class Event(models.Model):
+    STATUS_CHOICES = [
+        ('available', 'Available'),
+        ('full', 'Full'),
+        ('done', 'Done'),
+        ('cancelled', 'Cancelled'),
+    ]
     title = models.CharField(max_length=255)
     category = models.ForeignKey(
         EventType,
@@ -21,10 +28,18 @@ class Event(models.Model):
         null=True,
         blank=True,
     )
+    organizer = models.ManyToManyField(Profile, blank=True)
+    event_image = models.ImageField(upload_to='localevents/events/', null=True, blank=True)
     description = models.TextField()
-    location = models.CharField()
+    location = models.CharField(max_length=255)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
+    event_capacity = models.PositiveIntegerField(null=True, blank=True)
+    status = models.CharField(
+        max_length=32, 
+        choices=STATUS_CHOICES,
+        default='available'
+        )
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
 
@@ -36,3 +51,17 @@ class Event(models.Model):
 
     def get_absolute_url(self):
         return reverse('localevents:event_detail', args=[str(self.pk)])
+class EventSignup(models.Model):
+    event = models.ForeignKey(
+        Event, 
+        on_delete=models.CASCADE, 
+        related_name='signups'
+        )
+    user_registrant = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='event_signups',
+        blank=True,
+        null=True,
+    )
+    new_registrant = models.CharField(max_length=255, blank=True, null=True)

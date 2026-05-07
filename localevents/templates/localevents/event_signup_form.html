@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Event Signup{% endblock %}
+{% block content %}
+<h2>Sign up for {{ event.title }}</h2>
+<ul>
+    <li><strong>Category:</strong> {{ event.category }}<br></li>
+    <li><strong>Organizer:</strong> {{ event.organizer.first }}<br></li>
+    {% if event.event_image %}
+    <li>
+      <strong>Event Image:</strong>
+      <img src="{{ event.event_image.url }}" alt="{{ event.title }}" class="app-image">
+    </li>
+    {% endif %}
+    <li><strong>Location:</strong> {{ event.location }}</li>
+    <li><strong>Start Time: </strong> {{ event.start_time }}</li>
+    <li><strong>End Time: </strong> {{ event.end_time }}</li>
+    <li><strong>Status:</strong> {{ event.get_status_display }}</li>
+    <li><strong>Max Attendees:</strong> {{ event.event_capacity }}</li>
+    <li><strong>Signups:</strong> {{ event.signups.count }}</li>
+</ul>
+<p><strong>Description:</strong> {{ event.description }}</p>
+{% if event.event_capacity and event.signups.count >= event.event_capacity %}
+<p>This event is full.</p>
+{% else %}
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn">Sign Up</button>
+</form>
+{% endif %}
+<a href="{% url 'localevents:event_detail' event.pk %}">Back to event</a>
+{% endblock %}

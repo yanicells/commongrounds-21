@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ product.name }}{% endblock %}
+{% block content %}
+<h2>MerchStore Product: {{ product.name }}</h2>
+
+{% if product.product_image %}
+  <img src="{{ product.product_image.url }}" alt="{{ product.name }}" class="app-image">
+{% endif %}
+
+<ul>
+    <li><strong>Owner:</strong> {{ product.owner.display_name }}</li>
+    <li><strong>Type:</strong> {{ product.product_type.name }}</li>
+    <li><strong>Price:</strong> ${{ product.price }}</li>
+    <li><strong>Stock:</strong> {{ product.stock }}</li>
+    <li><strong>Status:</strong> {{ product.status }}</li>
+</ul>
+<p><strong>Description:</strong> {{ product.description }}</p>
+
+{% if request.user.is_authenticated and request.user.profile == product.owner %}
+  <p><a href="{% url 'merchstore:product-update' product.pk %}">Edit Product</a></p>
+{% elif product.owner != request.user.profile %}
+  <hr class="section-divider">
+  <h3>Buy this item</h3>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn" {% if product.stock == 0 %}disabled{% endif %}>Buy</button>
+  </form>
+{% endif %}
+
+<br>
+<a href="{% url 'merchstore:product-list' %}">Back to all products</a>
+{% endblock content %}

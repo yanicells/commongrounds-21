@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'diyprojects',
     'localevents',
     'accounts',
+    'grounds',
 ]
 
 MIDDLEWARE = [
@@ -139,3 +140,6 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
+

@@ -5,14 +5,54 @@
 
 {% block content %}
 <h2>DIY Projects</h2>
+
+{% if user.is_authenticated %}
+  <div style="margin-bottom: 1rem;">
+    {% if user.profile.role == "Project Creator" %}
+      <a href="{% url 'diyprojects:project-add' %}">Create New Project</a> | 
+    {% endif %}
+    <a href="{% url 'diyprojects:project-list' %}">Refresh List</a>
+  </div>
+{% endif %}
+
+{% if user.is_authenticated %}
+  {% if created_projects %}
+    <h3> Your Created Projects </h3>
+    <ul>
+      {% for project in created_projects %}
+        <li><a href="{{ project.get_absolute_url }}"> {{ project.title }}</a></li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  {% if favorited_projects %}
+    <h3> Your Favorite Projects </h3>
+    <ul>
+      {% for project in favorited_projects %}
+        <li><a href="{{ project.get_absolute_url }}"> {{ project.title }}</a></li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  {% if reviewed_projects %}
+    <h3> Your Reviewed Projects </h3>
+    <ul>
+      {% for project in reviewed_projects %}
+        <li><a href="{{ project.get_absolute_url }}"> {{ project.title }}</a></li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endif %}
+
+<h3> All Projects </h3>
 <ul>
-  {% for project in projects %}
-  <li>
-    <a href="{{ project.get_absolute_url }}"> {{ project.title }} </a>
-  </li>
+  {% for project in all_projects %}
+    <li><a href="{{ project.get_absolute_url }}"> {{ project.title }} </a> </li>
   {% empty %}
-  <li>No projects available</li>
+    <li> No projects available. </li>
   {% endfor %}
 </ul>
-<a href="{% url 'home' %}">Back to home</a>
-{% endblock %}
+
+<br>
+<a href="{% url 'home' %}">Back to Home</a>
+  {% endblock %}
