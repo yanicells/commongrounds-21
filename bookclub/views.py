@@ -1,6 +1,6 @@
-import profile
 
-from django.views.generic import CreateView, DetailView, ListView, UpdateView
+
+from django.views.generic import CreateView, DetailView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import redirect_to_login
 from django.shortcuts import get_object_or_404, redirect, render
