@@ -11,7 +11,6 @@ from .forms import BookForm, BookReviewForm, BorrowForm
 from django.utils import timezone
 
 
-
 class BookListView(ListView):
     model = Book
     template_name = 'bookclub/book_list.html'
@@ -22,17 +21,21 @@ class BookListView(ListView):
         if self.request.user.is_authenticated and hasattr(self.request.user, 'profile'):
             profile = self.request.user.profile
 
-            context['contributed_books'] = Book.objects.filter(contributor=profile)
-            context['bookmarked_books'] = Book.objects.filter(bookmark__profile=profile)
-            context['reviewed_books'] = Book.objects.filter(bookreview__user_reviewer=profile)
-            context['borrowed_books'] = Borrow.objects.filter(borrower=profile).distinct()
+            context['contributed_books'] = Book.objects.filter(
+                contributor=profile)
+            context['bookmarked_books'] = Book.objects.filter(
+                bookmark__profile=profile)
+            context['reviewed_books'] = Book.objects.filter(
+                bookreview__user_reviewer=profile)
+            context['borrowed_books'] = Borrow.objects.filter(
+                borrower=profile).distinct()
             context['all_books'] = Book.objects.exclude(
                 contributor=profile
-                ).exclude(
+            ).exclude(
                 bookmark__profile=profile
-                ).exclude(
+            ).exclude(
                 bookreview__user_reviewer=profile
-                )
+            )
         else:
             context['borrowed_books'] = Borrow.objects.none()
             context['contributed_books'] = Book.objects.none()
@@ -54,16 +57,15 @@ class BookDetailView(DetailView):
         context['is_bookmarked'] = False
         context['bookmarks_count'] = book.bookmark_set.count()
         context['reviews'] = book.bookreview_set.all()
-        context['can_edit'] =(
+        context['can_edit'] = (
             self.request.user.is_authenticated and
             hasattr(self.request.user, 'profile') and
             book.contributor == self.request.user.profile
         )
         if self.request.user.is_authenticated and hasattr(self.request.user, 'profile'):
             context['is_bookmarked'] = Bookmark.objects.filter(profile=self.request.user.profile,
-            book=book
-        ).exists()
-
+                                                               book=book
+                                                               ).exists()
 
         return context
 
@@ -74,7 +76,8 @@ class BookDetailView(DetailView):
             if not request.user.is_authenticated:
                 return redirect_to_login(request.get_full_path())
             profile = request.user.profile
-            bookmark_qs = Bookmark.objects.filter(profile=profile, book=self.object)
+            bookmark_qs = Bookmark.objects.filter(
+                profile=profile, book=self.object)
             if bookmark_qs.exists():
                 bookmark_qs.delete()
             else:
@@ -108,6 +111,7 @@ class BookCreateView(LoginRequiredMixin, RoleRequiredMixin, CreateView):
         book.contributor = self.request.user.profile
         book.save()
         return redirect(book.get_absolute_url())
+
 
 @role_required('Book Contributor')
 def book_update_view(request, pk):
@@ -150,17 +154,20 @@ class BookBorrowView(CreateView):
             profile = self.request.user.profile
 
         if not book.available_to_borrow:
-            form.add_error(None, "Book is currently unavailable to be borrowed.")
+            form.add_error(
+                None, "Book is currently unavailable to be borrowed.")
             return self.form_invalid(form)
 
         borrow_obj = form.save(commit=False)
         borrow_obj.book = book
         borrow_obj.borrower = profile
-        borrow_obj.name = form.cleaned_data.get('name') or (profile.display_name if profile else '')
-        
+        borrow_obj.name = form.cleaned_data.get('name') or (
+            profile.display_name if profile else '')
+
         new_borrow_date = form.cleaned_data['borrow_date']
         borrow_obj.borrow_date = new_borrow_date
-        borrow_obj.date_to_return = borrow_obj.borrow_date + timezone.timedelta(days=14)
+        borrow_obj.date_to_return = borrow_obj.borrow_date + \
+            timezone.timedelta(days=14)
         borrow_obj.save()
 
         # Update book availability
@@ -168,4 +175,3 @@ class BookBorrowView(CreateView):
         book.save()
 
         return redirect(book.get_absolute_url())
-        

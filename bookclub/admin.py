@@ -1,19 +1,23 @@
 from django.contrib import admin
 
-from .models import Genre, Book, BookReview,Bookmark, Borrow
+from .models import Genre, Book, BookReview, Bookmark, Borrow
 
 
 class GenreAdmin(admin.ModelAdmin):
     model = Genre
 
+
 class BookAdmin(admin.ModelAdmin):
     model = Book
+
 
 class BookReviewAdmin(admin.ModelAdmin):
     model = BookReview
 
+
 class BookmarkAdmin(admin.ModelAdmin):
     model = Bookmark
+
 
 class BorrowAdmin(admin.ModelAdmin):
     model = Borrow

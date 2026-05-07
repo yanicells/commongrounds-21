@@ -29,17 +29,18 @@ class Event(models.Model):
         blank=True,
     )
     organizer = models.ManyToManyField(Profile, blank=True)
-    event_image = models.ImageField(upload_to='localevents/events/', null=True, blank=True)
+    event_image = models.ImageField(
+        upload_to='localevents/events/', null=True, blank=True)
     description = models.TextField()
     location = models.CharField(max_length=255)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     event_capacity = models.PositiveIntegerField(null=True, blank=True)
     status = models.CharField(
-        max_length=32, 
+        max_length=32,
         choices=STATUS_CHOICES,
         default='available'
-        )
+    )
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
 
@@ -51,12 +52,14 @@ class Event(models.Model):
 
     def get_absolute_url(self):
         return reverse('localevents:event_detail', args=[str(self.pk)])
+
+
 class EventSignup(models.Model):
     event = models.ForeignKey(
-        Event, 
-        on_delete=models.CASCADE, 
+        Event,
+        on_delete=models.CASCADE,
         related_name='signups'
-        )
+    )
     user_registrant = models.ForeignKey(
         Profile,
         on_delete=models.CASCADE,

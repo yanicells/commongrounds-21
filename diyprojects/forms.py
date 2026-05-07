@@ -23,7 +23,7 @@ class ProjectRatingForm(forms.ModelForm):
 class ProjectReviewForm(forms.ModelForm):
     class Meta:
         model = ProjectReview
-        fields = ['comment','image']
+        fields = ['comment', 'image']
 
 
 class FavoriteForm(forms.ModelForm):

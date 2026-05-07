@@ -25,7 +25,8 @@ class CommissionListView(ListView):
                 maker=self.request.user.profile).distinct().order_by('status', '-created_on')
 
         else:
-            context['commission_list'] = Commission.objects.all().order_by('status', '-created_on')
+            context['commission_list'] = Commission.objects.all().order_by(
+                'status', '-created_on')
         return context
 
 
@@ -49,7 +50,7 @@ class CommissionDetailView(DetailView):
     def post(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             return redirect_to_login(request.get_full_path())
-        
+
         self.object = self.get_object()
 
         job_id = request.POST.get('button')

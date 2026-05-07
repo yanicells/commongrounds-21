@@ -28,7 +28,8 @@ class Commission(models.Model):
                               related_name='commissions')
     people_required = models.PositiveIntegerField(default=1)
     status = models.CharField(max_length=20,
-                              choices=[('0', 'Open'), ('1', 'Full'), ('2', 'Completed'), ('3', 'Discontinued')],
+                              choices=[('0', 'Open'), ('1', 'Full'),
+                                       ('2', 'Completed'), ('3', 'Discontinued')],
                               default='0')
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
