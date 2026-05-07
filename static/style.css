@@ -87,7 +87,7 @@ a {
   text-decoration: underline;
 }
 
-.btn {
+.btn, button, input[type="submit"] {
   background-color: #333;
   color: #fff;
   border: 1px solid #333;
