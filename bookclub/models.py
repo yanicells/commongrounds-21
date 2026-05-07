@@ -50,6 +50,8 @@ class BookReview(models.Model):
     user_reviewer = models.ForeignKey(
         Profile,
         on_delete=models.CASCADE,
+        null=True,
+        blank=True,
     )
     anon_reviewer = models.CharField(max_length=255, blank=True, null=True)
     book = models.ForeignKey(

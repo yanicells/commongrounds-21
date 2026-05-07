@@ -36,8 +36,9 @@
 <hr>
 <h3>Write a Review</h3>
 <form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
+{% csrf_token %}
+{{ form.as_p }}
+
   <button type="submit">Submit Review</button>
 </form>
 

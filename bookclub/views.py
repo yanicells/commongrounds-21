@@ -69,10 +69,11 @@ class BookDetailView(DetailView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if not request.user.is_authenticated:
-            return redirect_to_login(request.get_full_path())
 
         if 'bookmark' in request.POST:
+            if not request.user.is_authenticated:
+                return redirect_to_login(request.get_full_path())
+
             profile = request.user.profile
             bookmark_qs = Bookmark.objects.filter(profile=profile, book=self.object)
             if bookmark_qs.exists():
@@ -147,6 +148,11 @@ class BookBorrowView(LoginRequiredMixin, CreateView):
         book = get_object_or_404(Book, pk=self.kwargs['pk'])
         profile = self.request.user.profile
 
+        already_borrowed = Borrow.objects.filter(book=book, borrower=profile).exists()
+        if already_borrowed:
+            form.add_error(None, "Book already borrowed")
+            return self.form_invalid(form)
+
         borrow_obj, created = Borrow.objects.get_or_create(
             book=book,
             borrower=profile,
@@ -159,6 +165,7 @@ class BookBorrowView(LoginRequiredMixin, CreateView):
 
         borrow_obj.save()
         return redirect(book.get_absolute_url())
+
 
 
 
