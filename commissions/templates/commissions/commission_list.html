@@ -31,9 +31,13 @@
     <h3>Applied Commissions</h3>
     <ul>
     {% for commission in applied %}
-      <li>
-        <a href="{{ commission.get_absolute_url }}">{{ commission.title }}</a> - {{ commission.get_status_display }}
-      </li>
+      {% for job in commission.jobs.all %}
+        {% for applicant in job.applications.all %}
+          <li>
+            <a href="{{ commission.get_absolute_url }}">{{ commission.title }}</a> - {{ applicant.get_status_display }}
+          </li>
+        {% endfor %}
+      {% endfor %}
     {% endfor %}
     </ul>
   {% endif %}
