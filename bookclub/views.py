@@ -127,7 +127,7 @@ def book_update_view(request, pk):
     return render(request, 'bookclub/book_form.html', {'form': form, 'book': book})
 
 
-class BookBorrowView(LoginRequiredMixin, CreateView):
+class BookBorrowView(CreateView):
     model = Book
     form_class = BorrowForm
     template_name = 'bookclub/book_borrow_form.html'
@@ -145,7 +145,9 @@ class BookBorrowView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         book = get_object_or_404(Book, pk=self.kwargs['pk'])
-        profile = self.request.user.profile
+        profile = None
+        if self.request.user.is_authenticated and hasattr(self.request.user, 'profile'):
+            profile = self.request.user.profile
 
         already_borrowed = Borrow.objects.filter(book=book).exists()
         if already_borrowed or not book.available_to_borrow:
@@ -160,7 +162,7 @@ class BookBorrowView(LoginRequiredMixin, CreateView):
         new_borrow_date = form.cleaned_data['borrow_date']
         borrow_obj.borrow_date = new_borrow_date
         borrow_obj.date_to_return = borrow_obj.borrow_date + timezone.timedelta(days=14)
-        borrow_obj.name = profile.display_name
+        borrow_obj.name = form.cleaned_data.get('name') or (profile.display_name if profile else '')
         borrow_obj.save()
 
         # Update book availability

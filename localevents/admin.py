@@ -1,10 +1,10 @@
 from django.contrib import admin
 
-from .models import Event, EventCategory, EventSignup
+from .models import Event, EventType, EventSignup
 
 
-class EventCategoryAdmin(admin.ModelAdmin):
-    model = EventCategory
+class EventTypeAdmin(admin.ModelAdmin):
+    model = EventType
 
 
 class EventAdmin(admin.ModelAdmin):
@@ -15,6 +15,6 @@ class EventSignupAdmin(admin.ModelAdmin):
     model = EventSignup
 
 
-admin.site.register(EventCategory, EventCategoryAdmin)
+admin.site.register(EventType, EventTypeAdmin)
 admin.site.register(Event, EventAdmin)
 admin.site.register(EventSignup, EventSignupAdmin)

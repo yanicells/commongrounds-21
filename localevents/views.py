@@ -15,8 +15,7 @@ class EventListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated and hasattr(self.request.user, 'profile'):
-            if self.request.user.profile.role == 'Event Organizer':
-                context["created_events"] = Event.objects.filter(organizer=self.request.user.profile)
+            context["created_events"] = Event.objects.filter(organizer=self.request.user.profile)
             context["signed_up_events"] = Event.objects.filter(signups__user_registrant=self.request.user.profile)
             context["all_events"] = Event.objects.exclude(organizer=self.request.user.profile).exclude(signups__user_registrant=self.request.user.profile)
         else:
