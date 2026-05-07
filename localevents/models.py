@@ -3,7 +3,7 @@ from django.urls import reverse
 from accounts.models import Profile
 
 
-class EventCategory(models.Model):
+class EventType(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
 
@@ -23,7 +23,7 @@ class Event(models.Model):
     ]
     title = models.CharField(max_length=255)
     category = models.ForeignKey(
-        EventCategory,
+        EventType,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
