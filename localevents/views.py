@@ -15,13 +15,15 @@ class EventListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated and hasattr(self.request.user, 'profile'):
-            context["created_events"] = Event.objects.filter(organizer=self.request.user.profile)
-            context["signed_up_events"] = Event.objects.filter(signups__user_registrant=self.request.user.profile)
-            context["all_events"] = Event.objects.exclude(organizer=self.request.user.profile).exclude(signups__user_registrant=self.request.user.profile)
+            context["created_events"] = Event.objects.filter(
+                organizer=self.request.user.profile)
+            context["signed_up_events"] = Event.objects.filter(
+                signups__user_registrant=self.request.user.profile)
+            context["all_events"] = Event.objects.exclude(organizer=self.request.user.profile).exclude(
+                signups__user_registrant=self.request.user.profile)
         else:
             context["all_events"] = Event.objects.all()
         return context
-    
 
 
 class EventDetailView(DetailView):
@@ -36,11 +38,14 @@ class EventDetailView(DetailView):
         user_profile = None
         if self.request.user.is_authenticated and hasattr(self.request.user, 'profile'):
             user_profile = self.request.user.profile
-        context['is_organizer'] = bool(user_profile and event.organizer.filter(pk=user_profile.pk).exists())
-        context['has_signed_up'] = bool(user_profile and EventSignup.objects.filter(event=event, user_registrant=user_profile).exists())
-        context['is_full'] = bool(event.event_capacity is not None and event.signups.count() >= event.event_capacity)
+        context['is_organizer'] = bool(
+            user_profile and event.organizer.filter(pk=user_profile.pk).exists())
+        context['has_signed_up'] = bool(user_profile and EventSignup.objects.filter(
+            event=event, user_registrant=user_profile).exists())
+        context['is_full'] = bool(
+            event.event_capacity is not None and event.signups.count() >= event.event_capacity)
         return context
-    
+
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         if not request.user.is_authenticated or not hasattr(request.user, 'profile'):
@@ -48,7 +53,7 @@ class EventDetailView(DetailView):
 
         profile = request.user.profile
         if self.object.organizer.filter(pk=profile.pk).exists():
-             return redirect(self.object.get_absolute_url())
+            return redirect(self.object.get_absolute_url())
 
         if self.object.event_capacity and self.object.signups.count() >= self.object.event_capacity:
             return redirect(self.object.get_absolute_url())

@@ -20,15 +20,18 @@ class ProjectListView(ListView):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated and hasattr(self.request.user, 'profile'):
             profile = self.request.user.profile
-            context['created_projects'] = Project.objects.filter(creator = profile)
-            context['favorited_projects'] = Project.objects.filter(favorite__profile = profile)
-            context['reviewed_projects'] = Project.objects.filter(projectreview__reviewer = profile).distinct()
+            context['created_projects'] = Project.objects.filter(
+                creator=profile)
+            context['favorited_projects'] = Project.objects.filter(
+                favorite__profile=profile)
+            context['reviewed_projects'] = Project.objects.filter(
+                projectreview__reviewer=profile).distinct()
             context['all_projects'] = Project.objects.exclude(
                 creator=profile
             ).exclude(
-                favorite__profile = profile
+                favorite__profile=profile
             ).exclude(
-                projectreview__reviewer = profile
+                projectreview__reviewer=profile
             )
 
         else:
@@ -48,25 +51,26 @@ class ProjectDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['average_rating'] = ProjectRating.objects.filter(
-            project = self.get_object()
+            project=self.get_object()
         ).aggregate(Avg('score'))['score__avg']
 
-        context['reviews'] = ProjectReview.objects.filter(project = self.get_object())
+        context['reviews'] = ProjectReview.objects.filter(
+            project=self.get_object())
         context['review_form'] = ProjectReviewForm()
         context['rating_form'] = ProjectRatingForm()
         context['favorite_form'] = FavoriteForm()
         context['favorite_count'] = Favorite.objects.filter(
-                        project = self.get_object() 
-                    ).count()
+            project=self.get_object()
+        ).count()
 
         if self.request.user.is_authenticated:
             context['is_favorited'] = Favorite.objects.filter(
-                project = self.get_object(),
-                profile = self.request.user.profile
+                project=self.get_object(),
+                profile=self.request.user.profile
             ).exists()
             context['favorites'] = Favorite.objects.filter(
-                project = self.get_object(),
-                profile = self.request.user.profile
+                project=self.get_object(),
+                profile=self.request.user.profile
             ).first()
 
         return context
@@ -79,21 +83,21 @@ class ProjectDetailView(DetailView):
             return redirect_to_login(request.get_full_path())
 
         if action == 'favorite':
-                favorite = Favorite.objects.filter(
-                    project=self.object,
-                    profile=request.user.profile
-                ).first()
+            favorite = Favorite.objects.filter(
+                project=self.object,
+                profile=request.user.profile
+            ).first()
 
-                form = FavoriteForm(request.POST, instance=favorite)
+            form = FavoriteForm(request.POST, instance=favorite)
 
-                if form.is_valid():
-                    favorite = form.save(commit=False)
-                    favorite.project = self.object
-                    favorite.profile = request.user.profile
-                    favorite.save()
+            if form.is_valid():
+                favorite = form.save(commit=False)
+                favorite.project = self.object
+                favorite.profile = request.user.profile
+                favorite.save()
 
-                return redirect(request.path)
-        
+            return redirect(request.path)
+
         elif action == 'unfavorite':
             favorite = Favorite.objects.filter(
                 project=self.object,
@@ -117,7 +121,8 @@ class ProjectDetailView(DetailView):
             return redirect(request.path)
 
         elif action == 'rate':
-            rating = ProjectRating.objects.filter(project=self.object, profile=request.user.profile).first()
+            rating = ProjectRating.objects.filter(
+                project=self.object, profile=request.user.profile).first()
             form = ProjectRatingForm(request.POST, instance=rating)
 
             if form.is_valid():
@@ -160,4 +165,4 @@ def project_update_view(request, pk):
     else:
         form = ProjectForm(instance=project)
 
-    return render(request, 'diyprojects/project_form.html', {'form':form, 'project':project}) 
+    return render(request, 'diyprojects/project_form.html', {'form': form, 'project': project})

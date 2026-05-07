@@ -5,10 +5,12 @@ from django.urls import reverse_lazy
 from .models import Post, Comment
 from .forms import PostForm, CommentForm
 
+
 class PostListView(ListView):
     model = Post
     template_name = 'grounds/post_list.html'
     context_object_name = 'posts'
+
 
 class PostDetailView(DetailView):
     model = Post
@@ -23,7 +25,7 @@ class PostDetailView(DetailView):
     def post(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             return redirect('login')
-        
+
         self.object = self.get_object()
         form = CommentForm(request.POST)
         if form.is_valid():
@@ -32,10 +34,11 @@ class PostDetailView(DetailView):
             comment.author = request.user.profile
             comment.save()
             return redirect('grounds:post-detail', pk=self.object.pk)
-        
+
         context = self.get_context_data()
         context['form'] = form
         return self.render_to_response(context)
+
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
@@ -46,6 +49,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.author = self.request.user.profile
         return super().form_valid(form)
+
 
 class PostUpdateView(LoginRequiredMixin, UpdateView):
     model = Post

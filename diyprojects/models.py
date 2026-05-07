@@ -58,13 +58,12 @@ class Favorite(models.Model):
         on_delete=models.CASCADE
     )
     date_favorited = models.DateField(auto_now_add=True)
-    status =  models.CharField(
+    status = models.CharField(
         max_length=20,
-        choices =
-        [('Backlog', 'Backlog'),
-        ('To-Do', 'To-Do'),
-        ('Done', 'Done'),
-        ],
+        choices=[('Backlog', 'Backlog'),
+                 ('To-Do', 'To-Do'),
+                 ('Done', 'Done'),
+                 ],
         default='Backlog'
     )
 
@@ -81,7 +80,7 @@ class ProjectReview(models.Model):
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        )
+    )
     reviewer = models.ForeignKey(
         Profile,
         on_delete=models.CASCADE
@@ -100,13 +99,13 @@ class ProjectRating(models.Model):
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        )
+    )
     profile = models.ForeignKey(
         Profile,
         on_delete=models.CASCADE
     )
     score = models.IntegerField(
-        validators = [
+        validators=[
             MinValueValidator(1),
             MaxValueValidator(10)
         ]

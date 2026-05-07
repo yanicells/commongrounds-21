@@ -1,6 +1,7 @@
 from django import forms
 from .models import Book, BookReview, Borrow
 
+
 class BookReviewForm(forms.ModelForm):
     class Meta:
         model = BookReview
@@ -20,4 +21,3 @@ class BookForm(forms.ModelForm):
     class Meta:
         model = Book
         fields = ['title', 'genre', 'author', 'synopsis', 'publication_year']
-

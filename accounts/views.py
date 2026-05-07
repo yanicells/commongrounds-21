@@ -56,4 +56,3 @@ class DashboardView(LoginRequiredMixin, ListView):
         context['projects'] = Project.objects.filter(creator=profile)
         context['commissions'] = Commission.objects.filter(maker=profile)
         return context
-
