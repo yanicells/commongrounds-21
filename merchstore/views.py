@@ -80,6 +80,8 @@ class ProductCreateView(RoleRequiredMixin, CreateView):
     def form_valid(self, form):
         product = form.save(commit=False)
         product.owner = self.request.user.profile
+        if product.stock == 0:
+            product.status = 'Out of stock'
         product.save()
         return redirect(product.get_absolute_url())
 
@@ -95,7 +97,7 @@ def product_update_view(request, pk):
 
             if updated_product.stock == 0:
                 updated_product.status = 'Out of stock'
-            else:
+            elif updated_product.status == 'Out of stock' and updated_product.stock > 0:
                 updated_product.status = 'Available'
 
             updated_product.save()
