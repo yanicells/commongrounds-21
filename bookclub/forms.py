@@ -4,7 +4,7 @@ from .models import Book, BookReview, Borrow
 class BookReviewForm(forms.ModelForm):
     class Meta:
         model = BookReview
-        fields = ['anon_reviewer', 'title', 'comment']
+        fields = ['title', 'comment']
 
 
 class BorrowForm(forms.ModelForm):
