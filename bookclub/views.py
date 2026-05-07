@@ -57,11 +57,8 @@ class BookDetailView(DetailView):
         context['is_bookmarked'] = False
         context['bookmarks_count'] = book.bookmark_set.count()
         context['reviews'] = book.bookreview_set.all()
-        context['can_edit'] = (
-            self.request.user.is_authenticated and
-            hasattr(self.request.user, 'profile') and
-            book.contributor == self.request.user.profile
-        )
+        user = self.request.user
+        context['can_edit'] = user.is_authenticated and hasattr(user, 'profile') and book.contributor == user.profile
         if self.request.user.is_authenticated and hasattr(self.request.user, 'profile'):
             context['is_bookmarked'] = Bookmark.objects.filter(profile=self.request.user.profile,
                                                                book=book
