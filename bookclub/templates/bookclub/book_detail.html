@@ -25,6 +25,14 @@
   </form>
 {% endif %}
 
+<p><strong>Availability:</strong> 
+  {% if book.available_to_borrow %} 
+    Available to borrow 
+  {% else %} 
+    Unavailable to borrow 
+  {% endif %}
+</p>
+
 {% if book.available_to_borrow %}
   <p><a href="{% url 'bookclub:book-borrow' book.pk %}">Borrow Book</a></p>
 {% endif %}

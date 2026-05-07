@@ -149,20 +149,18 @@ class BookBorrowView(CreateView):
         if self.request.user.is_authenticated and hasattr(self.request.user, 'profile'):
             profile = self.request.user.profile
 
-        already_borrowed = Borrow.objects.filter(book=book).exists()
-        if already_borrowed or not book.available_to_borrow:
-            form.add_error(None, "Book already borrowed or unavailable")
+        if not book.available_to_borrow:
+            form.add_error(None, "Book is currently unavailable to be borrowed.")
             return self.form_invalid(form)
 
-        borrow_obj, created = Borrow.objects.get_or_create(
-            book=book,
-            borrower=profile,
-        )
-
+        borrow_obj = form.save(commit=False)
+        borrow_obj.book = book
+        borrow_obj.borrower = profile
+        borrow_obj.name = form.cleaned_data.get('name') or (profile.display_name if profile else '')
+        
         new_borrow_date = form.cleaned_data['borrow_date']
         borrow_obj.borrow_date = new_borrow_date
         borrow_obj.date_to_return = borrow_obj.borrow_date + timezone.timedelta(days=14)
-        borrow_obj.name = form.cleaned_data.get('name') or (profile.display_name if profile else '')
         borrow_obj.save()
 
         # Update book availability
